@@ -1,0 +1,104 @@
+
+***types***:
+- use suffixes to indicate them:
+_t for classes, structs and typedefs
+for example
+
+struct point_t
+{
+
+};
+
+motivation: easy to distinguish if it's varibale or type or enum
+
+_et for enum, examle
+
+enum format_et
+{
+        format_rgba,
+        format_g,
+        format_float
+};
+
+_pt for smart pointers. example:
+typedef shared_pt<point_t> point_pt;
+
+_vt for std::vector of something. example:
+typedef std::vector<point_t> point_vt;
+
+_vpt for shared_ptr< vector< point_t > >
+
+
+*** functions***:
+use convention with suffix detalization. last word is verb. examples:
+
+void image_create()		//creates image
+void image_sub_create()		//creates subimage
+void image_fill()		//fills image
+
+motivation: code completion and you personally will be happy by reason all needed functions are folded automatically.
+That is if you want to find all functions which work with image you should search code for image_*
+
+*** structures/classes***:
+
+prefer POD (plain old data) structures, as simple as possible, without bigotry though. use member functions only if you have to.
+else use external - see above;
+
+example:
+
+struct triangle_t
+{
+	~triangle_t();
+	triangle_t const & operator= (triangle_t const & other);
+};
+//but to work with:
+bool triangle_line_intersect( triangle_t const & t, line_t const & l );
+bool triangle_circle_intersect( triangle_t const & t, circle_t const & c );
+
+motivation: 
+- your structs/classes will be small and clear, it will be obvious what they are for and what data they hold
+- you can extend them just by adding a functon without header modification.
+
+howewer when it's needed - constructors, destructors, overloaded operators and virtual functions - obviously have to be defined inside a class.
+
+*** arguments ordering ****
+output parameters, mixed parameters, input paramets:
+motivation: some order just to be present. 
+example:
+
+triangle_points_set( triangle_t * t, point_t const & p1, point_t const & p2, point_t const & p3);
+
+cons for such: 
+- most old like in memcpy
+- similar to assignment operator (=)
+
+*** reference/pointer const/volatile/pointer ***
+- use pointer for output or mixed parameters.
+Motivation: in invokation code you will see that the variable is going to be modified.
+that is it's hard to say in
+> trianle_points_set( t, p1, p2, p3 ); 
+if t is going to be modified but if you see
+> trianle_points_set( &t, p1, p2, p3 ); 
+it hints that it at least can happen!
+
+-use const after type not before:
+that is 
+>int const a;
+instead of
+>const int a;
+
+motivation:
+compare:
+int const * const pa;
+vs:
+const int * const pa;
+
+- use spaces before * and after it, same with references &
+motivation: see example with const and several * above
+
+- use namespaces instead of prefixes. that is cmn::image_t instead of cmn_image_t
+motivation: actually namespaces are intended for this :)
+
+
+- KISS
+(not farewell, it's abbreviation: Keep It Simple Stupid!)
