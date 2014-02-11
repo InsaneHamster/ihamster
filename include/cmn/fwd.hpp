@@ -16,4 +16,5 @@ namespace cmn
         
         struct plotcirc_t;
         typedef std::shared_ptr<plotcirc_t> plotcirc_pt;
+        struct plotcirc_cmp_t;
 }
