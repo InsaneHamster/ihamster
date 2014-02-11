@@ -12,7 +12,28 @@ Build Type=Debug
 CMake Binary=file:///usr/bin/cmake
 Environment Profile=
 Extra Arguments=
-Install Directory=
+Install Directory=file:///usr/local
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=New Compiled Binary Launcher
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///mnt/stg1/proj/ihamster/build/src/ihamster
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Project Target=
+Use External Terminal=false
+Working Directory=
+isExecutable=true
 
 [Project]
 VersionControlSupport=kdevgit
