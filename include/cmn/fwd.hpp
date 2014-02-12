@@ -14,7 +14,9 @@ namespace cmn
         
         struct name_t;
         
-        struct plotcirc_t;
-        typedef std::shared_ptr<plotcirc_t> plotcirc_pt;
+        struct plotcirc_pat_t;
+        typedef std::shared_ptr<plotcirc_pat_t> plotcirc_pat_pt;
+        struct plotcirc_test_t;
+        typedef std::shared_ptr<plotcirc_test_t> plotcirc_test_pt;
         struct plotcirc_cmp_t;
 }
