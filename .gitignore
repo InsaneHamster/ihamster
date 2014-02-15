@@ -1,0 +1,10 @@
+build/
+.DS_Store
+
+#xcode settings
+proj/xcode/iHamster/iHamster.xcodeproj/*
+!proj/xcode/iHamster/iHamster.xcodeproj/project.pbxproj
+!proj/xcode/iHamster.xcodeproj/project.xcworkspace/
+proj/xcode/iHamster.xcodeproj/project.xcworkspace/*
+proj/xcode/iHamster.xcodeproj/xcuserdata/*
+!proj/xcode/iHamster.xcodeproj/project.xcworkspace/contents.xcworkspacedata

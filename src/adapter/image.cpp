@@ -1,3 +1,5 @@
+//this implementation uses libpng and is cross-platform
+//but for mac I decided to use native Cocoa API (NSImage based) see src/os/mac/adapter/image.mm
 #include <adapter/image.hpp>
 #include <cmn/log.hpp>
 #include <png.h>
