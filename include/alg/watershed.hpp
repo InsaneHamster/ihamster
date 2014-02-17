@@ -9,7 +9,7 @@ namespace alg
 struct watershed_object_t
 {
         int           x,y;      //position in original image
-        cmn::image_pt img;      //bitmask in format cmn::format_bw . White means presence of the object
+        cmn::image_pt img;      //bitmask in format cmn::format_bw . White means presence of an object
 };
 
 //on input image in format rgba8

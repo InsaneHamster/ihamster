@@ -14,6 +14,7 @@ enum format_et : uint16_t
         format_g16,            //two bytes
         format_gf,             //float (32)
         format_bw,             //black-white, monchromatic, 1 - white. bitmap. left to right, natural ordering. rows have to be at least 4 bytes aligned
+        format_size            //has to be last one
 };
 
 struct image_header_t
@@ -25,7 +26,7 @@ struct image_header_t
         uint16_t        flags;
 };
 
-enum { pitch_default };
+enum { pitch_default = -1};
 
 struct px_rgba_t
 {
@@ -75,6 +76,7 @@ struct image_sub_t : public image_t       //nested image
 };
 
 //utility functions
+int           format_bits_get(format_et format);
 
 //if pitch == pitch_default it will be taken as width*sizeof(pixel)
 void          image_init( image_plain_t * image, int width, int height, int pitch, format_et format );
