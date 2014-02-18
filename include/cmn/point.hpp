@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 
 namespace cmn
 {
@@ -28,9 +29,36 @@ struct point_tt<T, 2>
         point_tt operator- (point_tt const & other) const { return point_tt( x-other.x, y-other.y ); }                
 };
 
-typedef point_tt<int,   2> point2i_t;
-typedef point_tt<float, 2> point2f_t;
+template< typename T >
+struct point_tt<T, 3>
+{
+        typedef T                                               value_type;        
+        static int const dimension =                            3;
+        
+        typedef typename std::make_signed<T>::type              svalue_type;
+        typedef point_tt<svalue_type, dimension>                spoint_t;
+        
+        value_type       x,y,z;
+        
+        
+        point_tt(){}
+        point_tt( value_type _x, value_type _y, value_type _z ):x(_x),y(_y),z(_y){}
+        point_tt( spoint_t const & p ) : x(p.x), y(p.y), z(p.z) {};
+        
+        bool operator == ( point_tt const & other ) const { return x == other.x && y == other.y && z == other.z; }
+        bool operator != ( point_tt const & other ) const { return x != other.y || y != other.y || z != other.z; }
+        
+        point_tt operator+ (point_tt const & other) const { return point_tt( x+other.x, y+other.y, z+other.z ); }
+        spoint_t operator- (point_tt const & other) const { return spoint_t( x-other.x, y-other.y, z-other.z ); }                
+};
 
+
+typedef point_tt<int,   2>      point2i_t;
+typedef point_tt<float, 2>      point2f_t;
+typedef point_tt<int,   3>      point3i_t;
+typedef point_tt<uint8_t, 3>    point3b_t;
+typedef point_tt<int8_t,  3>    point3c_t;
+typedef point_tt<float, 3>      point3f_t;
 
         
 } //namespace cmn

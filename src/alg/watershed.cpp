@@ -18,7 +18,8 @@ struct helper_t
         
         image_pt                img_qunatized;             
         std::vector<point2i_t>  stack;
-        std::vector<point2i_t>  lookup;        
+        std::vector<point2i_t>  lookup;
+        std::vector<point2i_t>  backtrack;
         rect2i_t                bounds;
         uint16_t                color = 1;                
 };
@@ -26,9 +27,20 @@ struct helper_t
 } //end of anonymous namespace
 
 static void
-watershed_analyze( helper_t & h, point2i_t const & pt, point2i_t const & npt )        //npt - next point
+watershed_analyze( helper_t & h, point2i_t const & pt, cmn::point3b_t const & cl, point2i_t const & npt )        //npt - next point
 {
-        typedef point2i_t point_t;                
+        typedef point2i_t point_t;
+        cmn::point3b_t ncl = *(cmn::point3b_t*)(h.img->data.rgba + ( npt.x + npt.y * h.img->header.pitch ));
+        cmn::point3c_t dir = ncl - cl;
+        int sign = dir.x + (int)dir.y + dir.z;
+        if( sign > 0 )
+        {       //increases
+                h.backtrack.push_back(pt);
+        }
+        else
+        {       //decreases
+                
+        }
 }
 
 static void 
@@ -38,22 +50,23 @@ watershed_inner( helper_t & h )
         while( !h.stack.empty() )
         {
                 point_t pt = h.stack.back();
+                cmn::point3b_t cl = *(cmn::point3b_t*)(h.img->data.rgba + (pt.x + pt.y * h.img->header.pitch));
 
                 {
                         point_t npt = pt; ++npt.x;
-                        watershed_analyze( h, pt, npt );
+                        watershed_analyze( h, pt, cl, npt );
                 }
                 {
                         point_t npt = pt; --npt.y;
-                        watershed_analyze( h, pt, npt );
+                        watershed_analyze( h, pt, cl, npt );
                 }
                 {
                         point_t npt = pt; --npt.x;
-                        watershed_analyze( h, pt, npt );
+                        watershed_analyze( h, pt, cl, npt );
                 }
                 {
                         point_t npt = pt; ++npt.y;
-                        watershed_analyze( h, pt, npt );
+                        watershed_analyze( h, pt, cl, npt );
                 }                                
         }    
 }
