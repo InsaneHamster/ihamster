@@ -1,4 +1,5 @@
 #include <cmn/image.hpp>
+#include <cmn/util.hpp>
 #include <assert.h>
 
 namespace cmn
@@ -29,8 +30,9 @@ image_init( image_plain_t * image, int width, int height, int pitch, format_et f
 image_root_pt 
 image_create( int width, int height, int pitch, format_et format )
 {
+        //align_up
         if( pitch == pitch_default )
-                pitch = width * format_bits_get(format) >> 3;           //TODO: provide align up, especially for bw images which are not factor of 8
+                pitch = align_up<int, 8>( width * format_bits_get(format) ) >> 3;
         
         image_root_pt img( new image_root_t );
         image_init(img.get(), width, height, pitch, format);

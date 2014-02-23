@@ -119,4 +119,70 @@ unwind_00:
         return img;
 }
 
+bool          
+image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
+{
+        FILE* pImageFile = fopen(szImgPath, "wb");
+        if (!pImageFile)
+        {
+                cmn::log("cmn::image_save_to_png: can't open file: %s for writing", szImgPath);
+                return false;
+        }
+
+        png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+        png_infop info_ptr = 0;
+        if (!png_ptr)
+        {
+                cmn::log("cmn::image_save_to_png: png_create_write_struct failed");
+                goto unwind_00;
+        }
+
+        info_ptr = png_create_info_struct(png_ptr);
+        
+        if (!info_ptr)
+        {
+                cmn::log("cmn::image_save_to_png: png_create_info_struct failed ");
+                goto unwind_01;
+        }
+
+        // Set the longjump options
+        if (setjmp(png_jmpbuf(png_ptr)))
+        {
+                cmn::log("cmn::image_save_to_png: something bad happened... setjmp");
+                goto unwind_02;
+        }
+        
+        png_init_io(png_ptr, pImageFile);
+        
+        png_set_IHDR(
+                png_ptr, 
+                info_ptr, 
+                img->header.width, 
+                img->header.height,
+                8, 
+                PNG_COLOR_TYPE_RGBA, 
+                PNG_INTERLACE_NONE,
+                PNG_COMPRESSION_TYPE_DEFAULT, 
+                PNG_FILTER_TYPE_DEFAULT
+        );
+
+        
+        for (unsigned int y = 0; y < img->header.height; ++y)
+        {                
+                unsigned char* row = (unsigned char*)(img->data.rgba + y * img->header.pitch);                
+                png_write_row(png_ptr, row);
+        }
+        
+        png_write_end(png_ptr, info_ptr);
+        png_destroy_write_struct(&png_ptr, &info_ptr);        
+        fclose(pImageFile);
+        return true;
+
+unwind_02: //png_destroy_info_struct( &info_ptr, 0);        
+unwind_01: png_destroy_write_struct(&png_ptr, &info_ptr);         
+unwind_00: fclose( pImageFile );
+        return false;
+}
+
+
 }
