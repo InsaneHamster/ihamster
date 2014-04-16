@@ -71,7 +71,7 @@ image_sub_pt  image_sub_create( image_pt const & root, int x, int y, int width, 
 inline bool image_bw_readpixel( cmn::image_plain_t const * const img, int x, int y ) { return !!(img->bytes[ x>>3 + img->header.pitch * y ] & (1<<(x&7))); }
 inline void image_bw_writepixel( cmn::image_plain_t * img, int x, int y, bool value ) 
 {
-        uint8_t * addr = img->bytes + ( x>>3 + img->header.pitch * y );
+        uint8_t * addr = img->bytes + (x>>3) + img->header.pitch * y;
         if( value ) *addr |= 1 << (x&3); else *addr &= ~(1 << (x&3));        
 }
 

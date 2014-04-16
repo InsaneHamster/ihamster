@@ -55,7 +55,7 @@ static void fill_backtrace( helper_t & h, uint16_t found_color, int x, int y )
 static void 
 pool( helper_t & h, int base_x, int base_y )
 {
-#define grad() (((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b)) + 8
+#define grad() (((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b)) + 10
 //        #define grad() ((short)cc.g - (short)px_src.g) + 2
         
         cmn::color4b_t cc;
@@ -197,7 +197,7 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                 uint16_t * row = h.img_qunatized->row<uint16_t>(y);
                 for( int x = 0; x < header.width; ++x )
                 {
-                        uint16_t c = row[x] - 1;
+                        uint16_t c = row[x] - 1;                        
                         bounding_box_t & b = bbs[c];
                         if( b.l > x ) b.l = x;
                         if( b.r < x ) b.r = x;
@@ -220,7 +220,7 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                         uint16_t * row = h.img_qunatized->row<uint16_t>(y);
                         for( int x = b.l; x <= b.r; ++x )
                         {
-                                uint16_t c = row[x] - 1;                                                                
+                                uint16_t c = row[x];                                                                
                                 cmn::image_bw_writepixel( wo.img.get(), x, y, c == color );                                
                         }
                 }
@@ -289,6 +289,9 @@ watershed( std::vector< watershed_object_t > * objects, cmn::image_pt * colored,
         h.bounds = rect2i_t(0, 0, img->header.width, img->header.height);                
         memset( h.img_qunatized->bytes, 0, h.img_qunatized->header.pitch * h.img_qunatized->header.height );                                
         watershed_outer( h ); 
+        
+        if( objects )
+                waterched_create_objects( objects, h );
         
         if(colored)
                 waterched_color( colored, h );
