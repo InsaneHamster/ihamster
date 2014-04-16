@@ -96,7 +96,7 @@ cmn::image_pt image_create_from_png( char const * szImgPath )
 
         row_pointers.resize(height);
         pitch =  width * 4; //4 - rgba
-        img->memory = std::shared_ptr<uint8_t>( new uint8_t[ height * pitch ] );
+        img->memory = std::shared_ptr<uint8_t>( new uint8_t[ height * pitch ], [](uint8_t* mem){delete[] mem;} );
         row_ptr = img->memory.get();        
         for (y=0; y<height; ++y)
         {
@@ -110,7 +110,7 @@ cmn::image_pt image_create_from_png( char const * szImgPath )
         img->header.pitch = pitch;
         img->header.format = cmn::format_rgba;
         img->header.flags = 0;
-        img->data.bytes = img->memory.get();
+        img->bytes = img->memory.get();
         
 unwind_03: png_destroy_info_struct(png_ptr, &info_ptr);        
 unwind_02: png_destroy_read_struct(&png_ptr, 0, 0);
@@ -165,11 +165,13 @@ image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
                 PNG_COMPRESSION_TYPE_DEFAULT, 
                 PNG_FILTER_TYPE_DEFAULT
         );
+        
+        png_write_info( png_ptr, info_ptr );
 
         
         for (unsigned int y = 0; y < img->header.height; ++y)
         {                
-                unsigned char* row = (unsigned char*)(img->data.rgba + y * img->header.pitch);                
+                unsigned char* row = (unsigned char*)(img->bytes + y * img->header.pitch);
                 png_write_row(png_ptr, row);
         }
         

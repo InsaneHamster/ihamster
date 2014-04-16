@@ -10,10 +10,9 @@ int main()
         cmn::image_pt img = adapter::image_create_from_png( path );
         
         std::vector< alg::watershed_object_t > wo;
-        cmn::image_pt img_watersged;
-        alg::watershed( &wo, &img_watersged, img );
+        cmn::image_pt img_watershed;
+        alg::watershed( &wo, &img_watershed, img );
         
-        adapter::image_save_to_png( "/home/tot/a_colored.png", img_watersged );
-        
+        adapter::image_save_to_png( "/home/tot/a_colored.png", img_watershed );
         return 0;
 }

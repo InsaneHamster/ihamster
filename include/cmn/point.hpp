@@ -61,14 +61,17 @@ struct point_tt<T, 4>
 
         typedef typename std::make_signed<T>::type              svalue_type;
         typedef point_tt<svalue_type, dimension>                spoint_t;
-        
-        value_type       x,y,z,w;
+
+        union
+        {
+                struct{ value_type       x,y,z,w; };
+                struct{ value_type       r,g,b,a; };
+        };
         
         point_tt(){}
         explicit point_tt(point_tt<T, 3> const & pt3) : x(pt3.x), y(pt3.y), z(pt3.z), w(value_type(1)){}
         point_tt( value_type _x, value_type _y, value_type _z, value_type _w ) : x(_x), y(_y), z(_z), w(_w){}
 };
-
 
 typedef point_tt<int,   2>      point2i_t;
 typedef point_tt<float, 2>      point2f_t;
@@ -77,6 +80,7 @@ typedef point_tt<uint8_t, 3>    point3b_t;
 typedef point_tt<int8_t,  3>    point3c_t;
 typedef point_tt<float, 3>      point3f_t;
 typedef point_tt<uint8_t, 4>    point4b_t;
+typedef point_tt<uint8_t, 4>    color4b_t;
 typedef point_tt<int8_t,  4>    point4c_t;
 typedef point_tt<float, 4>      point4f_t;
 

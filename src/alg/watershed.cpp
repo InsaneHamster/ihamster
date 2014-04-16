@@ -15,124 +15,213 @@ namespace
 struct helper_t
 {
         //std::vector< watershed_object_t > * objects;
-        cmn::image_t *                      img;
+        cmn::image_t *          img;
         
         image_pt                img_qunatized;             
-        std::vector<point2i_t>  stack;
+        rect2i_t                bounds;        
+        std::vector<point2i_t>  backtrace;
         std::vector<point2i_t>  lookup;
-        std::vector<point2i_t>  backtrack;
-        rect2i_t                bounds;
-        uint16_t                color = 0;   
-        uint16_t                found_color = 0;        
+        
+        uint16_t                color = 0;              //increases, current color to use        
 };
 
 } //end of anonymous namespace
 
-static bool
-watershed_analyze( helper_t & h, point2i_t const & pt, cmn::point3b_t const & cl, point2i_t const & npt )        //npt - next point
-{
-        typedef point2i_t point_t;
-        bool found_color = false;
-        if( h.bounds.is_inside(npt) )
-        {        
-                cmn::point3b_t ncl = *(cmn::point3b_t*)(h.img->data.rgba + ( npt.x + npt.y * h.img->header.pitch ));
-                cmn::point3c_t dir = ncl - cl;
-                int sign = dir.x + (int)dir.y + dir.z;        
-                if( sign >= 0 )
-                {       //increases
-                        uint16_t color_q = h.img_qunatized->data.g16[ npt.x + npt.y * h.img_qunatized->header.pitch ];
-                        if( color_q )
-                        {
-                                h.found_color = color_q;
-                                found_color = true;
-                        }                        
-                        else
-                        {
-                                h.backtrack.push_back(pt);                                
-                                h.stack.push_back(npt); //remember for walk
-                        }
-                }
-                else
-                {       //decreases
-                        h.lookup.push_back(pt);
-                }
-        }        
-        return found_color;
-}
+static const uint16_t cl_empty = 0;
+static const uint16_t cl_handled = -1;
 
-static bool 
-watershed_find_color( helper_t & h )
-{
-        typedef point2i_t point_t;
-        bool found_color = false;
-        while( !h.stack.empty() && !found_color )
-        {
-                point_t pt = h.stack.back();
-                h.stack.pop_back();
-                cmn::point3b_t cl = *(cmn::point3b_t*)(h.img->data.rgba + (pt.x + pt.y * h.img->header.pitch));                
-                
-                {
-                        point_t npt = pt; ++npt.x;
-                        found_color = watershed_analyze( h, pt, cl, npt );
-                }
-                if(!found_color)
-                {
-                        point_t npt = pt; --npt.y;
-                        found_color = watershed_analyze( h, pt, cl, npt );
-                }
-                if(!found_color)
-                {
-                        point_t npt = pt; --npt.x;
-                        found_color = watershed_analyze( h, pt, cl, npt );
-                }
-                if(!found_color)
-                {
-                        point_t npt = pt; ++npt.y;
-                        found_color = watershed_analyze( h, pt, cl, npt );
-                }                                
-        }
+
+static void fill_backtrace( helper_t & h, uint16_t found_color )
+{        
+        std::vector< point2i_t > & backtrace = h.backtrace;
+        size_t size = backtrace.size();
+        point2i_t * pts = &backtrace[0];
+        point2i_t * pts_end = pts + size;
         
-        return found_color;
+        int pitch = h.img_qunatized->header.pitch;
+        uint8_t * bytes = h.img_qunatized->bytes;
+        
+        for( ; pts < pts_end; ++pts  )
+        {
+                uint16_t * pos = (uint16_t*)( bytes + pts->y * pitch + pts->x * sizeof( uint16_t ) );
+                *pos = found_color;
+        }
+        backtrace.clear();
+        h.lookup.clear();       //we don't need to lookup anything anymore
 }
 
 static void 
-watershed_backtrack( helper_t & h )
+pool( helper_t & h, int base_x, int base_y, cmn::color4b_t px_src )
 {
-        typedef point2i_t point_t;
-        while( !h.backtrack.empty() )
-        {
-                point_t pt = h.backtrack.back();
-                h.backtrack.pop_back();
-                uint16_t * color_q = h.img_qunatized->data.g16 + ( pt.x + pt.y * h.img_qunatized->header.pitch );
-                *color_q = h.found_color;
+        cmn::color4b_t cc;
+        uint16_t       cd;
+        
+        std::vector<point2i_t>  & backtrace = h.backtrace;
+        std::vector<point2i_t>  & lookup = h.lookup;                
+        int x = base_x;
+        int y = base_y;
+        
+        size_t img_dst_pitch = h.img_qunatized->header.pitch;
+        size_t img_src_pitch = h.img->header.pitch;
+                
+        while(1)               
+        { 
+                cmn::color4b_t const * row_src = h.img->row<cmn::color4b_t>(y);
+                uint16_t * row_dst = h.img_qunatized->row<uint16_t>(y);
+                
+                uint16_t * row_dst_next = (uint16_t *)(((size_t)row_dst) + img_dst_pitch);
+                uint16_t * row_dst_prev = (uint16_t *)(((size_t)row_dst) - img_dst_pitch);
+
+                cmn::color4b_t const * row_src_next = (cmn::color4b_t const *)(((size_t)row_src) + img_src_pitch);
+                cmn::color4b_t const * row_src_prev = (cmn::color4b_t const *)(((size_t)row_src) - img_src_pitch);
+                
+                bool add_backtrace = false;                
+                
+                //right
+                if( (x+1) < h.img->header.width )
+                {
+                        cd = row_dst[x+1];
+                        if( cd != cl_handled )
+                        {
+                                cc = row_src[x+1];                        
+                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
+                        
+                                if( val >= 0 )
+                                {
+                                        if( !cd )
+                                        {
+                                                row_dst[x+1] = cl_handled;
+                                                lookup.emplace_back( x+1, y );
+                                                add_backtrace = true;
+                                        }
+                                        else
+                                        {
+                                                //it says we found a color!
+                                                fill_backtrace( h, cd );
+                                                return;
+                                        }
+                                }
+                        }
+                }
+                
+                //left
+                if( x > 0 )
+                {
+                        cd = row_dst[x-1];
+                        if( cd != cl_handled )
+                        {
+                                cc = row_src[x-1];
+                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
+                        
+                                if( val >= 0 )
+                                {
+                                        if( !cd )
+                                        {
+                                                row_dst[x-1] = cl_handled;
+                                                lookup.emplace_back( x-1, y );                                
+                                                add_backtrace = true;
+                                        }
+                                        else
+                                        {
+                                                //it says we found a color!
+                                                fill_backtrace( h, cd );
+                                                return;
+                                        }
+                                }  
+                        }
+                }
+                
+                if( (y+1) < h.img->header.height )
+                {
+                        cd = row_dst_next[x];
+                        if( cd != cl_handled )
+                        {
+                                cc = row_src_next[x];                        
+                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
+                        
+                                if( val >= 0 )
+                                {
+                                        if( !cd )
+                                        {
+                                                row_dst_next[x] = cl_handled;
+                                                lookup.emplace_back( x, y+1 );                                
+                                                add_backtrace = true;
+                                        }
+                                        else
+                                        {
+                                                //it says we found a color!
+                                                fill_backtrace( h, cd );
+                                                return;
+                                        }
+                                }
+                        }
+                }
+
+                if( y > 0 )
+                {
+                        cd = row_dst_prev[x];
+                        if( cd != cl_handled )
+                        {
+                                cc = row_src_prev[x];                        
+                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
+                        
+                                if( val >= 0 )
+                                {
+                                        if( !cd )
+                                        {
+                                                row_dst_prev[x] = cl_handled;
+                                                lookup.emplace_back( x, y-1 );                                
+                                                add_backtrace = true;
+                                        }
+                                        else
+                                        {
+                                                //it says we found a color!
+                                                fill_backtrace( h, cd );
+                                                return;
+                                        }
+                                }
+                        }
+                }
+                
+                if( add_backtrace )
+                {
+                        row_dst[x] = cl_handled;
+                        backtrace.emplace_back( x, y );
+                }
+                
+                if( !lookup.empty() )
+                {
+                     point2i_t & tail = lookup.back();
+                     x = tail.x;
+                     y = tail.y;
+                     lookup.pop_back();
+                }
+                else break;
+                
         }
+        
+        fill_backtrace( h, ++h.color );
 }
 
 static void
 watershed_outer( helper_t & h )
 {
         typedef point2i_t point_t;
-        while( !h.lookup.empty() )
+        int width = h.bounds.size.x;
+        int height = h.bounds.size.y;
+                
+        for( int y = 0; y < height; ++y )
         {
+                cmn::color4b_t const * row_src = reinterpret_cast<cmn::color4b_t const *>( h.img->bytes + h.img->header.pitch * y );
+                uint16_t * row_dst = reinterpret_cast<uint16_t *>( h.img_qunatized->bytes + h.img_qunatized->header.pitch * y );                                
+                for( int x = 0; x < width; ++x )
                 {
-                        point_t pt = h.lookup.back();
-                        h.lookup.pop_back();
-                        h.stack.push_back(pt);
-                        h.backtrack.push_back(pt);
-                }
-                
-                bool found_color = watershed_find_color(h);                
-                if( !found_color )
-                {
-                        ++h.color;
-                        h.found_color = h.color;
-                }
-                else
-                {
-                        h.stack.clear();
-                }
-                
-                watershed_backtrack(h);
+                        if( !row_dst[x] )        //else we have color already, skip
+                        {                        
+                                cmn::color4b_t px_src = row_src[x];
+                                pool( h, x, y, px_src );                                
+                        }                        
+                }                                
         }
 }
 
@@ -155,7 +244,7 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
         image_header_t & header = h.img_qunatized->header;
         for( int y = 0; y < header.height; ++y )
         {
-                uint16_t * row = h.img_qunatized->data.g16 + y * header.pitch;
+                uint16_t * row = h.img_qunatized->row<uint16_t>(y);
                 for( int x = 0; x < header.width; ++x )
                 {
                         uint16_t c = row[x] - 1;
@@ -178,7 +267,7 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                 
                 for( int y = b.t; y <= b.b; ++y )
                 {
-                        uint16_t * row = h.img_qunatized->data.g16 + y * header.pitch;
+                        uint16_t * row = h.img_qunatized->row<uint16_t>(y);
                         for( int x = b.l; x <= b.r; ++x )
                         {
                                 uint16_t c = row[x] - 1;                                                                
@@ -189,7 +278,7 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
 }
 
 static int const gNumColors = 16;
-static cmn::px_rgba_t gColors[gNumColors] =
+static cmn::color4b_t gColors[gNumColors] =
 {
         {255,   0,      0,      255},
         {0,     255,    0,      255},
@@ -218,13 +307,13 @@ waterched_color( cmn::image_pt * colored, helper_t & h )
         
         for( int y = 0; y < src_header.height; ++y )
         {
-                uint16_t * src_row = h.img_qunatized->data.g16 + y * src_header.pitch;
-                cmn::px_rgba_t * dst_row = (*colored)->data.rgba + y * dst_header.pitch;
+                uint16_t * src_row = (uint16_t *)(h.img_qunatized->bytes + y * src_header.pitch);
+                cmn::color4b_t * dst_row = (cmn::color4b_t *)((*colored)->bytes + y * dst_header.pitch);
                 for( int x = 0; x < src_header.width; ++x )
                 {
                         uint16_t src_px = src_row[x];
                         int src_idx = src_px & 15;      //15 == gNumColors-1
-                        cmn::px_rgba_t * dst_px = dst_row+x;
+                        cmn::color4b_t * dst_px = dst_row+x;
                         *dst_px = gColors[src_idx];                                                                       
                 }
         }
@@ -247,11 +336,8 @@ watershed( std::vector< watershed_object_t > * objects, cmn::image_pt * colored,
         //h.objects = objects;
         h.img = img.get();
         h.img_qunatized = image_create( img->header.width, img->header.height, cmn::pitch_default, cmn::format_g16); // img->header.format );   
-        h.bounds = rect2i_t(0, 0, img->header.width, img->header.height);
-                
-        memset( h.img_qunatized->data.bytes, 0, h.img_qunatized->header.pitch * h.img_qunatized->header.height );        
-        h.lookup.push_back( point_t(0,0) );
-                
+        h.bounds = rect2i_t(0, 0, img->header.width, img->header.height);                
+        memset( h.img_qunatized->bytes, 0, h.img_qunatized->header.pitch * h.img_qunatized->header.height );                                
         watershed_outer( h ); 
         
         if(colored)

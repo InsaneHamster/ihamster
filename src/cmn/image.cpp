@@ -36,8 +36,8 @@ image_create( int width, int height, int pitch, format_et format )
         
         image_root_pt img( new image_root_t );
         image_init(img.get(), width, height, pitch, format);
-        img->memory = std::shared_ptr<uint8_t>( new uint8_t[pitch*height] );
-        img->data.bytes = img->memory.get();
+        img->memory = std::shared_ptr<uint8_t>( new uint8_t[pitch*height], [](uint8_t * mem){ delete[] mem; } );
+        img->bytes = img->memory.get();
         return img;
 }
 

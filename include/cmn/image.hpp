@@ -6,7 +6,7 @@
 
 namespace cmn
 {
-
+        
 enum format_et : uint16_t
 {
         format_rgba,           //byte for each channel, shows how they lay in memory. in hex, little endian 0xAABBGGRR (native for opengl)
@@ -28,35 +28,18 @@ struct image_header_t
 
 enum { pitch_default = -1};
 
-struct px_rgba_t
-{
-        union
-        {
-                struct
-                {
-                           uint8_t r,g,b,a;
-                };
-                uint8_t    row[4];                
-        };        
-};
 
-union image_data_t
-{
-        union
-        {
-                uint8_t *      bytes;
-                uint8_t *      g;       //alias to bytes
-                uint16_t *     g16;
-                float *        gf;
-                px_rgba_t *    rgba;        
-        };
-};
-
+template< typename T, int D>
+struct point_tt;
+typedef point_tt<uint8_t, 4> color4b_t;
 
 struct image_plain_t
 {
         image_header_t  header;
-        image_data_t    data;
+        uint8_t *       bytes;
+        
+        template< typename T > T * row( int y ) { return (T*)(header.pitch * y + bytes); }
+        template< typename T > T const * row( int y ) const { return (T const*)(header.pitch * y + bytes); }
 };
 
 struct image_t : public image_plain_t
@@ -85,10 +68,10 @@ image_sub_pt  image_sub_create( image_pt const & root, int x, int y, int width, 
 //image_root_pt image_copy( image_pt const & src );
 //image_sub_pt  image_branch( image_pt const & src );          //creates either a sibling-subimage (sharing the same buffer) or if src is rootimage creates subimage equal in size to src
 
-inline bool image_bw_readpixel( cmn::image_plain_t const * const img, int x, int y ) { return !!(img->data.bytes[ x>>3 + img->header.pitch * y ] & (1<<(x&7))); }
+inline bool image_bw_readpixel( cmn::image_plain_t const * const img, int x, int y ) { return !!(img->bytes[ x>>3 + img->header.pitch * y ] & (1<<(x&7))); }
 inline void image_bw_writepixel( cmn::image_plain_t * img, int x, int y, bool value ) 
 {
-        uint8_t * addr = img->data.bytes + ( x>>3 + img->header.pitch * y );
+        uint8_t * addr = img->bytes + ( x>>3 + img->header.pitch * y );
         if( value ) *addr |= 1 << (x&3); else *addr &= ~(1 << (x&3));        
 }
 
