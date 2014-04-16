@@ -31,9 +31,11 @@ static const uint16_t cl_empty = 0;
 static const uint16_t cl_handled = -1;
 
 
-static void fill_backtrace( helper_t & h, uint16_t found_color )
+static void fill_backtrace( helper_t & h, uint16_t found_color, int x, int y )
 {        
         std::vector< point2i_t > & backtrace = h.backtrace;
+        backtrace.emplace_back( x, y );
+        
         size_t size = backtrace.size();
         point2i_t * pts = &backtrace[0];
         point2i_t * pts_end = pts + size;
@@ -51,8 +53,11 @@ static void fill_backtrace( helper_t & h, uint16_t found_color )
 }
 
 static void 
-pool( helper_t & h, int base_x, int base_y, cmn::color4b_t px_src )
+pool( helper_t & h, int base_x, int base_y )
 {
+#define grad() (((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b)) + 8
+//        #define grad() ((short)cc.g - (short)px_src.g) + 2
+        
         cmn::color4b_t cc;
         uint16_t       cd;
         
@@ -60,6 +65,7 @@ pool( helper_t & h, int base_x, int base_y, cmn::color4b_t px_src )
         std::vector<point2i_t>  & lookup = h.lookup;                
         int x = base_x;
         int y = base_y;
+        cmn::color4b_t px_src;
         
         size_t img_dst_pitch = h.img_qunatized->header.pitch;
         size_t img_src_pitch = h.img->header.pitch;
@@ -68,12 +74,10 @@ pool( helper_t & h, int base_x, int base_y, cmn::color4b_t px_src )
         { 
                 cmn::color4b_t const * row_src = h.img->row<cmn::color4b_t>(y);
                 uint16_t * row_dst = h.img_qunatized->row<uint16_t>(y);
+                px_src = row_src[x];
                 
                 uint16_t * row_dst_next = (uint16_t *)(((size_t)row_dst) + img_dst_pitch);
-                uint16_t * row_dst_prev = (uint16_t *)(((size_t)row_dst) - img_dst_pitch);
-
-                cmn::color4b_t const * row_src_next = (cmn::color4b_t const *)(((size_t)row_src) + img_src_pitch);
-                cmn::color4b_t const * row_src_prev = (cmn::color4b_t const *)(((size_t)row_src) - img_src_pitch);
+                cmn::color4b_t const * row_src_next = (cmn::color4b_t const *)(((size_t)row_src) + img_src_pitch);                
                 
                 bool add_backtrace = false;                
                 
@@ -84,52 +88,25 @@ pool( helper_t & h, int base_x, int base_y, cmn::color4b_t px_src )
                         if( cd != cl_handled )
                         {
                                 cc = row_src[x+1];                        
-                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
+                                short val = grad();
                         
                                 if( val >= 0 )
                                 {
                                         if( !cd )
                                         {
-                                                row_dst[x+1] = cl_handled;
                                                 lookup.emplace_back( x+1, y );
                                                 add_backtrace = true;
                                         }
                                         else
                                         {
                                                 //it says we found a color!
-                                                fill_backtrace( h, cd );
+                                                fill_backtrace( h, cd, x, y );
                                                 return;
                                         }
                                 }
                         }
                 }
                 
-                //left
-                if( x > 0 )
-                {
-                        cd = row_dst[x-1];
-                        if( cd != cl_handled )
-                        {
-                                cc = row_src[x-1];
-                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
-                        
-                                if( val >= 0 )
-                                {
-                                        if( !cd )
-                                        {
-                                                row_dst[x-1] = cl_handled;
-                                                lookup.emplace_back( x-1, y );                                
-                                                add_backtrace = true;
-                                        }
-                                        else
-                                        {
-                                                //it says we found a color!
-                                                fill_backtrace( h, cd );
-                                                return;
-                                        }
-                                }  
-                        }
-                }
                 
                 if( (y+1) < h.img->header.height )
                 {
@@ -137,46 +114,19 @@ pool( helper_t & h, int base_x, int base_y, cmn::color4b_t px_src )
                         if( cd != cl_handled )
                         {
                                 cc = row_src_next[x];                        
-                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
+                                short val = grad();
                         
                                 if( val >= 0 )
                                 {
                                         if( !cd )
                                         {
-                                                row_dst_next[x] = cl_handled;
                                                 lookup.emplace_back( x, y+1 );                                
                                                 add_backtrace = true;
                                         }
                                         else
                                         {
                                                 //it says we found a color!
-                                                fill_backtrace( h, cd );
-                                                return;
-                                        }
-                                }
-                        }
-                }
-
-                if( y > 0 )
-                {
-                        cd = row_dst_prev[x];
-                        if( cd != cl_handled )
-                        {
-                                cc = row_src_prev[x];                        
-                                short val = ((short)cc.r - (short)px_src.r)  + ((short)cc.g - (short)px_src.g) + ((short)cc.b - (short)px_src.b);
-                        
-                                if( val >= 0 )
-                                {
-                                        if( !cd )
-                                        {
-                                                row_dst_prev[x] = cl_handled;
-                                                lookup.emplace_back( x, y-1 );                                
-                                                add_backtrace = true;
-                                        }
-                                        else
-                                        {
-                                                //it says we found a color!
-                                                fill_backtrace( h, cd );
+                                                fill_backtrace( h, cd, x, y );
                                                 return;
                                         }
                                 }
@@ -200,7 +150,7 @@ pool( helper_t & h, int base_x, int base_y, cmn::color4b_t px_src )
                 
         }
         
-        fill_backtrace( h, ++h.color );
+        fill_backtrace( h, ++h.color, x, y );
 }
 
 static void
@@ -218,8 +168,8 @@ watershed_outer( helper_t & h )
                 {
                         if( !row_dst[x] )        //else we have color already, skip
                         {                        
-                                cmn::color4b_t px_src = row_src[x];
-                                pool( h, x, y, px_src );                                
+                                //cmn::color4b_t px_src = row_src[x];
+                                pool( h, x, y );                                
                         }                        
                 }                                
         }
