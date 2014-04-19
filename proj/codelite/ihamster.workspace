@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="ihamster" Database="">
+  <Project Name="ihamster" Path="ihamster.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="ihamster" ConfigName="Debug_Linux"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="ihamster" ConfigName="Debug_Linux"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+  <Environment>
+    <![CDATA[]]>
+  </Environment>
+</CodeLite_Workspace>

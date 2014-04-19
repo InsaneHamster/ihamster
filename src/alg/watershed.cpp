@@ -30,6 +30,12 @@ struct helper_t
 static const uint16_t cl_empty = 0;
 static const uint16_t cl_handled = -1;
 
+//finds object where gradient / luminance is roughly constant
+static void mark_flat_objects( helper_t & h )
+{
+        
+}
+
 
 static void fill_backtrace( helper_t & h, uint16_t found_color, int x, int y )
 {        
@@ -288,6 +294,8 @@ watershed( std::vector< watershed_object_t > * objects, cmn::image_pt * colored,
         h.img_qunatized = image_create( img->header.width, img->header.height, cmn::pitch_default, cmn::format_g16); // img->header.format );   
         h.bounds = rect2i_t(0, 0, img->header.width, img->header.height);                
         memset( h.img_qunatized->bytes, 0, h.img_qunatized->header.pitch * h.img_qunatized->header.height );                                
+        
+        mark_flat_objects( h );
         watershed_outer( h ); 
         
         if( objects )
