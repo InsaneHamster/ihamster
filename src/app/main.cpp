@@ -6,7 +6,7 @@
 
 int main()
 {
-        char const * path = "/home/tot/a.png";
+        char const * path = "/home/tot/c.png";
         cmn::image_pt img = adapter::image_create_from_png( path );
         
         std::vector< alg::watershed_object_t > wo;

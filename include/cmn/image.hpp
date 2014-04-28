@@ -72,7 +72,13 @@ inline bool image_bw_readpixel( cmn::image_plain_t const * const img, int x, int
 inline void image_bw_writepixel( cmn::image_plain_t * img, int x, int y, bool value ) 
 {
         uint8_t * addr = img->bytes + (x>>3) + img->header.pitch * y;
-        if( value ) *addr |= 1 << (x&3); else *addr &= ~(1 << (x&3));        
+        if( value ) *addr |= 1 << (x&7); else *addr &= ~(1 << (x&7));        
+}
+inline bool image_bw_readpixel( uint8_t const * const row, int x ) { return row[x >> 3] & (1 << (x&7)); }
+inline bool image_bw_writepixel( uint8_t * const row, int x, bool value ) 
+{
+        uint8_t * const addr = row + (x >> 3);
+        if( value ) *addr |= 1 << (x&7); else *addr &= ~(1 << (x&7));
 }
 
 
