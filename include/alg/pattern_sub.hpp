@@ -7,7 +7,7 @@ namespace alg
 
 struct pattern_sub_t
 {
-      //cmn::image_pt     image;             //g16 accumulative image. that is if object presents in the point the point will have +1, with max == number
+      cmn::image_pt     image;             //g16 accumulative image. that is if object presents in the point the point will have +1, with max == number
       //cmn::plotcirc_pt    plotcirc;
       int                 number;            //number of images accumulated in image. -1 normalized and finalized.
 };

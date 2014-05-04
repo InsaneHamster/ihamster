@@ -26,7 +26,12 @@ struct point_tt<T, 2>
         bool operator != ( point_tt const & other ) const { return x != other.y || y != other.y; }
         
         point_tt operator+ (point_tt const & other) const { return point_tt( x+other.x, y+other.y ); }
-        point_tt operator- (point_tt const & other) const { return point_tt( x-other.x, y-other.y ); }                
+        point_tt operator- (point_tt const & other) const { return point_tt( x-other.x, y-other.y ); }
+        
+        point_tt operator/ (T const& d) const { return point_tt( x/d, y/d ); }
+        point_tt operator* (T const& m) const { return point_tt( x*m, y*m ); }
+        
+        T distance_sq( point_tt const & p ) const { T dx = x-p.x; T dy = y - p.y; return dx*dx + dy*dy; }        
 };
 
 template< typename T >

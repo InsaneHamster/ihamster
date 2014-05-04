@@ -2,7 +2,7 @@
 #include <cmn/image.hpp>
 #include <cmn/rect.hpp>
 #include <cmn/log.hpp>
-#include <cmn/util.hpp>
+#include <cmn/utils.hpp>
 #include <string.h>
 
 
@@ -418,16 +418,25 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                 wo.x = b.l;
                 wo.y = b.t;
                 wo.img = cmn::image_create( (b.r-b.l)+1, (b.b-b.t)+1, pitch_default, cmn::format_bw );
+                wo.x_wc = wo.y_wc = 0;
                 
                 for( int y = b.t; y <= b.b; ++y )
                 {
                         uint16_t * row = h.img_quantized->row<uint16_t>(y);
                         for( int x = b.l; x <= b.r; ++x )
                         {
-                                uint16_t c = row[x];                                                                
-                                cmn::image_bw_writepixel( wo.img.get(), x, y, c == color );                                
+                                uint16_t c = row[x];                
+                                bool belong = c == color;
+                                cmn::image_bw_writepixel( wo.img.get(), x, y, belong );
+                                if( belong )
+                                {
+                                        wo.x_wc += x-b.l; wo.y_wc += y-b.t; 
+                                }
                         }
                 }
+                
+                wo.x_wc /= wo.img->header.width;
+                wo.y_wc /= wo.img->header.height;
         }        
 }
 

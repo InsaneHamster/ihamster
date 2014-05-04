@@ -1,5 +1,5 @@
 #include <cmn/image.hpp>
-#include <cmn/util.hpp>
+#include <cmn/utils.hpp>
 #include <assert.h>
 
 namespace cmn

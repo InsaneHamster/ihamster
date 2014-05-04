@@ -7,6 +7,7 @@
 #include <png.h>
 #include <vector>
 #include <stdio.h>
+#include <assert.h>
 
 namespace adapter
 {
@@ -119,8 +120,7 @@ unwind_00:
         return img;
 }
 
-bool          
-image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
+static bool image_save_to_png_rgba( char const * szImgPath, cmn::image_pt const & img )
 {
         FILE* pImageFile = fopen(szImgPath, "wb");
         if (!pImageFile)
@@ -183,7 +183,22 @@ image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
 unwind_02: //png_destroy_info_struct( &info_ptr, 0);        
 unwind_01: png_destroy_write_struct(&png_ptr, &info_ptr);         
 unwind_00: fclose( pImageFile );
-        return false;
+        return false;        
+}
+
+bool          
+image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
+{
+        bool ok = false;
+        switch( img->header.format )
+        {
+                case cmn::format_rgba:
+                        ok = image_save_to_png( szImgPath, img );
+                default:
+                        assert(!"Saving of image of this format is not supported");
+        }
+                
+        return ok;
 }
 
 

@@ -15,6 +15,8 @@ set(IHAMSTER_CPP_FILES
 	app/main.cpp
 	cmn/log.cpp
 	cmn/image.cpp
+	cmn/image_utils.cpp
+	cmn/plotcirc.cpp
 )
 
 add_executable( ihamster ${IHAMSTER_CPP_FILES} )

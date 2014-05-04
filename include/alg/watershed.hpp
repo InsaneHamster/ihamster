@@ -8,8 +8,9 @@ namespace alg
 //bounding box around found object with its contour
 struct watershed_object_t
 {
-        int           x,y;      //position in original image
-        cmn::image_pt img;      //bitmask in format cmn::format_bw . White means presence of an object                
+        int           x,y;                      //position in original image
+        cmn::image_pt img;                      //bitmask in format cmn::format_bw . White means presence of an object       
+        float         x_wc, y_wc;               //wc is weight center - center of mass x,y in img. not a watercloset as you can think!
 };
 
 //on input image in format rgba8
