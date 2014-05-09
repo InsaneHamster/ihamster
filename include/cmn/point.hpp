@@ -79,6 +79,7 @@ struct point_tt<T, 4>
 };
 
 typedef point_tt<int,   2>      point2i_t;
+typedef point_tt<uint16_t, 2>   point2w_t;
 typedef point_tt<float, 2>      point2f_t;
 typedef point_tt<int,   3>      point3i_t;
 typedef point_tt<uint8_t, 3>    point3b_t;

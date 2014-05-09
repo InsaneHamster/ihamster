@@ -11,7 +11,8 @@ include_directories("../include")
 
 set(IHAMSTER_CPP_FILES 
 	adapter/image.cpp
-	alg/watershed.cpp
+	alg/plotcirc_db.cpp
+	alg/watershed.cpp	
 	app/main.cpp
 	cmn/log.cpp
 	cmn/image.cpp
