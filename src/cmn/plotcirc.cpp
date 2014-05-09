@@ -74,8 +74,9 @@ plotcirc_create( image_pt const & img, point2f_t weight_center )
         image_header_t const & hs = img->header;
         //int width = find_max_distance( hs, weight_center ); //hs.width * hs.width + hs.height * hs.height;
         
-        plotcirc_pt pt = std::make_shared<plotcirc_t>();
+        plotcirc_pt pt = std::make_shared<plotcirc_t>();        
         plotcirc_t * pt_row = pt.get();
+        pt_row->img_size = point2i_t( hs.width, hs.height );
                         
         float angle_step = 2 * M_PI / plotcirc_discr;
         image_t * img_src = img.get(); 

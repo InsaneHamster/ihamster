@@ -15,8 +15,10 @@ enum { plotcirc_discr = 32 };         //discretization of circular plot, each po
 //segements are normalized - that is maximum size = 1, normalization is made by hypotenuse
 struct plotcirc_t
 {
+        point2i_t                img_size;                      //original
         std::vector< point2f_t > rows[plotcirc_discr];
         int                      numpoints = 0;
+        
 };
 
 struct plotcirc_length_sort_t
@@ -34,7 +36,7 @@ struct plotcirc_cmp_t
         //TODO: use Linear Least Squares method to determine, refer to http://en.wikipedia.org/wiki/Linear_least_squares_%28mathematics%29 
         float angle;                 
         
-        float scale;                 //scale of object relative to pattern ( >1 if object is larger than pattern)
+        float scale;                 //scale of object relative to pattern ( >1 if test object is larger than pattern)
 };
 
 

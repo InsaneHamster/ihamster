@@ -31,7 +31,8 @@ struct point_tt<T, 2>
         point_tt operator/ (T const& d) const { return point_tt( x/d, y/d ); }
         point_tt operator* (T const& m) const { return point_tt( x*m, y*m ); }
         
-        T distance_sq( point_tt const & p ) const { T dx = x-p.x; T dy = y - p.y; return dx*dx + dy*dy; }        
+        T distance_sq( point_tt const & p ) const { T dx = x-p.x; T dy = y - p.y; return dx*dx + dy*dy; }
+        T sq() const { return x*x + y*y; };
 };
 
 template< typename T >

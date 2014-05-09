@@ -134,15 +134,19 @@ void plotcirc_db_t::find( plotcirc_find_vt * res, int find_nth_best, cmn::plotci
                 best[err] = pc;
         }
         
+        float hypotenuse_test = sqrt( test->img_size.sq() );
+        
         auto j = best.begin();
         for( int i = 0; i < find_nth_best && j != best.end(); ++i, ++j )
-        {
-              plotcirc_find_t f;
-              f.plotcirc = j->second;
-              f.cmp_res.diff = j->first;
-              f.cmp_res.scale = 1;      //TODO: fix it!
-              f.cmp_res.angle = 0;
-              res->push_back( f );
+        {                
+                float hypotenuse_pat = sqrt( j->second->img_size.sq() );
+
+                plotcirc_find_t f;
+                f.plotcirc = j->second;
+                f.cmp_res.diff = j->first;                                          
+                f.cmp_res.scale = hypotenuse_test / hypotenuse_pat;
+                f.cmp_res.angle = 0;
+                res->push_back( f );
         }
 }
 

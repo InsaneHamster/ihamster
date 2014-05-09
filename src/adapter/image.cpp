@@ -193,7 +193,7 @@ image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
         switch( img->header.format )
         {
                 case cmn::format_rgba:
-                        ok = image_save_to_png( szImgPath, img );
+                        ok = image_save_to_png_rgba( szImgPath, img );
                 default:
                         assert(!"Saving of image of this format is not supported");
         }
