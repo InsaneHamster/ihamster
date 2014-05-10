@@ -194,6 +194,7 @@ image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
         {
                 case cmn::format_rgba:
                         ok = image_save_to_png_rgba( szImgPath, img );
+                        break;
                 default:
                         assert(!"Saving of image of this format is not supported");
         }

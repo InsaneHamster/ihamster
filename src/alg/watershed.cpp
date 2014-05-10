@@ -3,8 +3,10 @@
 #include <cmn/rect.hpp>
 #include <cmn/log.hpp>
 #include <cmn/utils.hpp>
-#include <string.h>
+#include <adapter/image.hpp>    //to save to png file
 
+#include <limits.h>
+#include <string.h>
 
 static short    const   c_ws_max_pix_diff = 30;                 //if difference is less, we assume it's a same object (watershed)
 static short    const   c_ws_crit_pix_diff = 640;               //if difference is larger its definitely a sharp border
@@ -389,7 +391,13 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
         objects->resize( h.color );
         std::vector<bounding_box_t> bbs;
         bbs.resize( h.color );
-        memset( &bbs[0], 0, sizeof(bounding_box_t) );
+        for( int i = 0; i < h.color; ++i )
+        {
+                bounding_box_t & b = bbs[i];
+                b.l = b.t = INT_MAX;
+                b.r = b.b = 0;
+        }
+        //memset( &bbs[0], 0, sizeof(bounding_box_t) );
         
         image_header_t & header = h.img_quantized->header;
         for( int y = 0; y < header.height; ++y )
@@ -415,10 +423,10 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                 bounding_box_t & b = bbs[i];
                 uint16_t color = (uint16_t)i+1;
                 watershed_object_t & wo = (*objects)[i];
-                wo.x = b.l;
-                wo.y = b.t;
+                wo.lt.x = b.l;
+                wo.lt.y = b.t;
                 wo.img = cmn::image_create( (b.r-b.l)+1, (b.b-b.t)+1, pitch_default, cmn::format_bw );
-                wo.x_wc = wo.y_wc = 0;
+                wo.wc = point2f_t(0,0);
                 
                 for( int y = b.t; y <= b.b; ++y )
                 {
@@ -427,16 +435,16 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                         {
                                 uint16_t c = row[x];                
                                 bool belong = c == color;
-                                cmn::image_bw_writepixel( wo.img.get(), x, y, belong );
+                                cmn::image_bw_writepixel( wo.img.get(), x-b.l, y-b.t, belong );
                                 if( belong )
                                 {
-                                        wo.x_wc += x-b.l; wo.y_wc += y-b.t; 
+                                        wo.wc.x += x-b.l; wo.wc.y += y-b.t; 
                                 }
                         }
                 }
                 
-                wo.x_wc /= wo.img->header.width;
-                wo.y_wc /= wo.img->header.height;
+                wo.wc.x /= wo.img->header.width;
+                wo.wc.y /= wo.img->header.height;
         }        
 }
 
@@ -511,5 +519,45 @@ watershed( std::vector< watershed_object_t > * objects, cmn::image_pt * colored,
         if(colored)
                 waterched_color( colored, h );
 }
+
+
+void watershed_object_print( watershed_object_t const * wo, std::string const & path )
+{
+        cmn::image_t * img_src = wo->img.get();
+        cmn::image_header_t const & hs = img_src->header;
+        cmn::image_pt  img_dst_p = cmn::image_create( hs.width, hs.height, cmn::pitch_default, cmn::format_rgba );
+        cmn::image_t * img_dst = img_dst_p.get();
+        cmn::image_header_t const & hd = img_dst->header;
         
+        cmn::color4b_t white(255,255,255,255);
+        cmn::color4b_t black(0,0,0,255);
+        
+        for( int y = 0; y < hs.height; ++y )
+        {
+                cmn::color4b_t * const row_dst = img_dst->row<cmn::color4b_t>(y);
+                uint8_t const * const row_src = wo->img->row<uint8_t>(y);
+                for( int x = 0; x < hs.width; ++x )
+                {
+                        bool set = cmn::image_bw_readpixel( row_src, x );
+                        row_dst[x] = set ? white : black;
+                }
+        }
+        
+        adapter::image_save_to_png( path.c_str(), img_dst_p );
 }
+
+void watershed_objects_print( std::vector< watershed_object_t > const & objects, std::string const & folder )
+{
+        char buf[256];
+        int size = (int)objects.size();
+        for( int i = 0; i < size; ++i )
+        {
+                sprintf(buf, "/%03d.png", i);
+                std::string path = folder + buf;
+                watershed_object_print( &objects[i], path );
+        }
+}
+
+
+
+} //alg

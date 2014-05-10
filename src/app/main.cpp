@@ -16,5 +16,7 @@ int main()
         adapter::image_save_to_png( "/home/tot/a_colored.png", img_watershed );
         printf("found %d objects\n", (int)wo.size());
         
+        alg::watershed_objects_print( wo, "/home/tot/objects" );
+        
         return 0;
 }
