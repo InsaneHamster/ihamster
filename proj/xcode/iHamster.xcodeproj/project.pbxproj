@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21061EE1191F6862006B790E /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043818AF982600A16CB4 /* image.cpp */; };
+		21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FB191F5F0700A16A86 /* filter.cpp */; };
+		21D2B1FE191F5F0700A16A86 /* plotcirc_db.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FC191F5F0700A16A86 /* plotcirc_db.cpp */; };
+		21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FF191F5F3000A16A86 /* image_utils.cpp */; };
+		21D2B203191F5F3000A16A86 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B200191F5F3000A16A86 /* image.cpp */; };
+		21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B201191F5F3000A16A86 /* plotcirc.cpp */; };
 		5ADE044918AF982600A16CB4 /* pattern_study.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043B18AF982600A16CB4 /* pattern_study.cpp */; };
 		5ADE044A18AF982600A16CB4 /* watershed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043D18AF982600A16CB4 /* watershed.cpp */; };
 		5ADE044B18AF982600A16CB4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043F18AF982600A16CB4 /* main.cpp */; };
@@ -29,6 +35,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		21D2B1F5191F5EAC00A16A86 /* filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filter.hpp; sourceTree = "<group>"; };
+		21D2B1F6191F5EAC00A16A86 /* plotcirc_db.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = plotcirc_db.hpp; sourceTree = "<group>"; };
+		21D2B1F7191F5ECD00A16A86 /* image_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = image_utils.hpp; sourceTree = "<group>"; };
+		21D2B1F8191F5ECD00A16A86 /* point.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = point.hpp; sourceTree = "<group>"; };
+		21D2B1F9191F5ECD00A16A86 /* rect.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rect.hpp; sourceTree = "<group>"; };
+		21D2B1FA191F5ECD00A16A86 /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
+		21D2B1FB191F5F0700A16A86 /* filter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filter.cpp; sourceTree = "<group>"; };
+		21D2B1FC191F5F0700A16A86 /* plotcirc_db.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plotcirc_db.cpp; sourceTree = "<group>"; };
+		21D2B1FF191F5F3000A16A86 /* image_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image_utils.cpp; sourceTree = "<group>"; };
+		21D2B200191F5F3000A16A86 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
+		21D2B201191F5F3000A16A86 /* plotcirc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plotcirc.cpp; sourceTree = "<group>"; };
+		21D2B205191F5F8C00A16A86 /* coding_convention.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = coding_convention.txt; path = ../../doc/coding_convention.txt; sourceTree = "<group>"; };
 		5ADE042C18AF973D00A16CB4 /* iHamster */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = iHamster; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ADE043818AF982600A16CB4 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
 		5ADE043B18AF982600A16CB4 /* pattern_study.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pattern_study.cpp; sourceTree = "<group>"; };
@@ -67,9 +85,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		21D2B206191F5F9600A16A86 /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				21D2B205191F5F8C00A16A86 /* coding_convention.txt */,
+			);
+			name = doc;
+			sourceTree = "<group>";
+		};
 		5ADE042118AF950200A16CB4 = {
 			isa = PBXGroup;
 			children = (
+				21D2B206191F5F9600A16A86 /* doc */,
 				5ADE046318AFA14E00A16CB4 /* Frameworks */,
 				5ADE044D18AF987300A16CB4 /* include */,
 				5ADE043618AF982600A16CB4 /* src */,
@@ -111,6 +138,8 @@
 		5ADE043918AF982600A16CB4 /* alg */ = {
 			isa = PBXGroup;
 			children = (
+				21D2B1FB191F5F0700A16A86 /* filter.cpp */,
+				21D2B1FC191F5F0700A16A86 /* plotcirc_db.cpp */,
 				5ADE043B18AF982600A16CB4 /* pattern_study.cpp */,
 				5ADE043D18AF982600A16CB4 /* watershed.cpp */,
 				5ADE043C18AF982600A16CB4 /* readme.txt */,
@@ -129,6 +158,9 @@
 		5ADE044118AF982600A16CB4 /* cmn */ = {
 			isa = PBXGroup;
 			children = (
+				21D2B1FF191F5F3000A16A86 /* image_utils.cpp */,
+				21D2B200191F5F3000A16A86 /* image.cpp */,
+				21D2B201191F5F3000A16A86 /* plotcirc.cpp */,
 				5ADE044218AF982600A16CB4 /* log.cpp */,
 			);
 			path = cmn;
@@ -180,6 +212,8 @@
 		5ADE045018AF987300A16CB4 /* alg */ = {
 			isa = PBXGroup;
 			children = (
+				21D2B1F5191F5EAC00A16A86 /* filter.hpp */,
+				21D2B1F6191F5EAC00A16A86 /* plotcirc_db.hpp */,
 				5ADE045118AF987300A16CB4 /* pattern.hpp */,
 				5ADE045218AF987300A16CB4 /* pattern_study.hpp */,
 				5ADE045318AF987300A16CB4 /* pattern_sub.hpp */,
@@ -191,6 +225,10 @@
 		5ADE045518AF987300A16CB4 /* cmn */ = {
 			isa = PBXGroup;
 			children = (
+				21D2B1F7191F5ECD00A16A86 /* image_utils.hpp */,
+				21D2B1F8191F5ECD00A16A86 /* point.hpp */,
+				21D2B1F9191F5ECD00A16A86 /* rect.hpp */,
+				21D2B1FA191F5ECD00A16A86 /* utils.hpp */,
 				5ADE045618AF987300A16CB4 /* fwd.hpp */,
 				5ADE045718AF987300A16CB4 /* image.hpp */,
 				5ADE045818AF987300A16CB4 /* log.hpp */,
@@ -252,7 +290,7 @@
 		5ADE042218AF950200A16CB4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = 5ADE042518AF950200A16CB4 /* Build configuration list for PBXProject "iHamster" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -276,11 +314,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21D2B1FE191F5F0700A16A86 /* plotcirc_db.cpp in Sources */,
 				5ADE044918AF982600A16CB4 /* pattern_study.cpp in Sources */,
+				21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */,
+				21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */,
 				5ADE044A18AF982600A16CB4 /* watershed.cpp in Sources */,
 				5ADE044B18AF982600A16CB4 /* main.cpp in Sources */,
+				21061EE1191F6862006B790E /* image.cpp in Sources */,
 				5ADE044C18AF982600A16CB4 /* log.cpp in Sources */,
 				5ADE046018AFA00B00A16CB4 /* image.mm in Sources */,
+				21D2B203191F5F3000A16A86 /* image.cpp in Sources */,
+				21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +339,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				SYMROOT = ../../build;
 			};
 			name = Debug;
@@ -338,12 +383,27 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/opt/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -371,11 +431,26 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/opt/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "-lpng";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -400,6 +475,7 @@
 				5ADE043418AF973D00A16CB4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

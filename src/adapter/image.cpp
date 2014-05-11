@@ -11,7 +11,8 @@
 
 namespace adapter
 {
-        
+
+#ifndef __APPLE__
 cmn::image_pt image_create_from_png( char const * szImgPath )
 {
         cmn::image_root_pt img( new cmn::image_root_t );        
@@ -119,7 +120,8 @@ unwind_01: fclose(fp);
 unwind_00: 
         return img;
 }
-
+#endif
+	
 static bool image_save_to_png_rgba( char const * szImgPath, cmn::image_pt const & img )
 {
         FILE* pImageFile = fopen(szImgPath, "wb");

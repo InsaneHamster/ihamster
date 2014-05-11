@@ -2,7 +2,7 @@
 #include <alg/watershed.hpp>
 #include <adapter/image.hpp>
 #include <stdio.h>
-
+#include <string>
 
 int main()
 {
@@ -15,8 +15,9 @@ int main()
         
         adapter::image_save_to_png( "/home/tot/a_colored.png", img_watershed );
         printf("found %d objects\n", (int)wo.size());
-        
-        alg::watershed_objects_print( wo, "/home/tot/objects" );
+    
+		std::string folder("/home/tot/objects");
+        alg::watershed_objects_print( wo, folder );
         
         return 0;
 }

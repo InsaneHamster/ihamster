@@ -6,7 +6,7 @@
 #include <adapter/image.hpp>    //to save to png file
 
 #include <limits.h>
-#include <string.h>
+#include <string>
 
 static short    const   c_ws_max_pix_diff = 30;                 //if difference is less, we assume it's a same object (watershed)
 static short    const   c_ws_crit_pix_diff = 640;               //if difference is larger its definitely a sharp border
