@@ -43,6 +43,8 @@ struct plotcirc_cmp_t
 //image has to be binary and purified
 plotcirc_pt    plotcirc_create( image_pt const & img, point2f_t weight_center );
 
+//see in adapter / plotcirc.hpp
+//void           plotcirc_print( plotcirc_pt const & pc, std::string const & path );
 
 
 }

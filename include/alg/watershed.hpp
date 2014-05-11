@@ -21,8 +21,8 @@ struct watershed_object_t
 void watershed( std::vector< watershed_object_t > * objects, cmn::image_pt * colored, cmn::image_pt const & img );
 
 
-void watershed_object_print( watershed_object_t const * wo, std::string const & path ); //to png file
-void watershed_objects_print( std::vector< watershed_object_t > const & objects, std::string const & folder );
+void watershed_object_save_to_png( watershed_object_t const * wo, char const * szPath ); //to png file
+void watershed_objects_save_to_png( std::vector< watershed_object_t > const & objects, std::string const & folder );
 
 
         

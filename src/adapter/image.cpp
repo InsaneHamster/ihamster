@@ -187,7 +187,7 @@ unwind_00: fclose( pImageFile );
 }
 
 bool          
-image_save_to_png( char const * szImgPath, cmn::image_pt const & img )
+image_save_to_png( cmn::image_pt const & img, char const * szImgPath )
 {
         bool ok = false;
         switch( img->header.format )

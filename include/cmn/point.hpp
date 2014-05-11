@@ -77,6 +77,15 @@ struct point_tt<T, 4>
         point_tt(){}
         explicit point_tt(point_tt<T, 3> const & pt3) : x(pt3.x), y(pt3.y), z(pt3.z), w(value_type(1)){}
         point_tt( value_type _x, value_type _y, value_type _z, value_type _w ) : x(_x), y(_y), z(_z), w(_w){}
+        
+        template< typename T2 > 
+        point_tt operator * ( T2 const & v ) const { return point_tt(T(x*v), T(y*v), T(z*v), T(w*v)); }
+        
+        template< typename T2 > 
+        point_tt operator / ( T2 const & v ) const { return point_tt(T(x/v), T(y/v), T(z/v), T(w/v)); }
+        
+        point_tt & operator+= ( point_tt const & p ) { x+=p.x; y+=p.y; z+=p.z; w+=p.w; return *this; }
+        
 };
 
 typedef point_tt<int,   2>      point2i_t;
