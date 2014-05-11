@@ -6,6 +6,7 @@
 #include <adapter/image.hpp>    //to save to png file
 
 #include <limits.h>
+#include <string>
 #include <string.h>
 
 static short    const   c_ws_max_pix_diff = 30;                 //if difference is less, we assume it's a same object (watershed)

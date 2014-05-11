@@ -58,7 +58,7 @@ cmn::image_pt image_create_from_png( char const * szImgPath )
 	img->header.format = cmn::format_rgba;
 	img->header.flags = 0;
 	
-	img->data.bytes = pixelBuf;
+	img->bytes = pixelBuf;
 	//I believe we are done. Unsure regarding alpha channel though
 	return img;
 

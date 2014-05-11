@@ -6,7 +6,7 @@
 #include <adapter/plotcirc.hpp>
 
 #include <stdio.h>
-
+#include <string>
 
 int main()
 {
@@ -19,7 +19,7 @@ int main()
         
         adapter::image_save_to_png( img_watershed, "/home/tot/a_colored.png" );
         printf("found %d objects\n", (int)wo.size());
-        
+    
         alg::watershed_objects_save_to_png( wo, "/home/tot/objects" );
         
         cmn::plotcirc_pt pc = cmn::plotcirc_create( wo[3].img, wo[3].wc );        
