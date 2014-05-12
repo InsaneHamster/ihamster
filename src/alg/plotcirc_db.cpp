@@ -13,23 +13,9 @@ struct plotcirc_weight_t
         int             found_dots;
 };
         
-typedef std::multimap< float, cmn::plotcirc_pt > pc_map_t;
 
-struct plotcirc_db_t::plotcirc_db_it        
-{
-        pc_map_t        begins[cmn::plotcirc_discr];
-        pc_map_t        ends[cmn::plotcirc_discr];
-};
         
-plotcirc_db_t::plotcirc_db_t() : m_impl(new plotcirc_db_it)
-{
-}
-
-plotcirc_db_t::~plotcirc_db_t()
-{
-}
-        
-void plotcirc_db_t::add( cmn::plotcirc_pt const & pc )
+void plotcirc_db_t_add( cmn::plotcirc_db_pt const & pcd, cmn::plotcirc_pt const & pc )
 {
         for( int i = 0; i < cmn::plotcirc_discr; ++i )
         {
@@ -39,17 +25,17 @@ void plotcirc_db_t::add( cmn::plotcirc_pt const & pc )
              
              while( v != v_end )
              {
-                m_impl->begins[i].insert( std::make_pair( v->x, pc ) );
-                m_impl->ends[i].insert( std::make_pair( v->y, pc ) );
+                pcd->begins[i].insert( std::make_pair( v->x, pc ) );
+                pcd->ends[i].insert( std::make_pair( v->y, pc ) );
                 ++v;
              }
         }                
 }
 
-static void record_weight( std::map< cmn::plotcirc_pt, plotcirc_weight_t > & w, int n, float t, pc_map_t::const_iterator f, pc_map_t const & map )
+static void record_weight( std::map< cmn::plotcirc_pt, plotcirc_weight_t > & w, int n, float t, cmn::plotcirc_db_map_t::const_iterator f, cmn::plotcirc_db_map_t const & map )
 {        
-        pc_map_t::const_iterator f_down = f;
-        pc_map_t::const_iterator f_prev = f;
+        cmn::plotcirc_db_map_t::const_iterator f_down = f;
+        cmn::plotcirc_db_map_t::const_iterator f_prev = f;
         float dist_min;
                         
         while( !(f_down == map.begin() && f == map.end() && w.size() < n ) )
@@ -95,27 +81,27 @@ static void record_weight( std::map< cmn::plotcirc_pt, plotcirc_weight_t > & w, 
         }                
 };
 
-void plotcirc_db_t::find( plotcirc_find_vt * res, int find_nth_best, cmn::plotcirc_pt const & test )
+void plotcirc_db_find( cmn::plotcirc_find_vt * res, int find_nth_best, cmn::plotcirc_db_pt const & pcd, cmn::plotcirc_pt const & test )
 {                
         //to gather in a fair manner nth best of them we have to collect all, and select at last stage
-        //but it's to havy operation so we will select actually 10% of them ... or 1 max
+        //but it's too heavy operation so we will select actually 10% of them ... or 1 max
         std::map< cmn::plotcirc_pt, plotcirc_weight_t > weights;  
-        int to_collect = (int)ceil(m_impl->begins[0].size() * 0.1f);        
+        int to_collect = (int)ceil(pcd->begins[0].size() * 0.1f);        
                                 
         for( size_t i = 0; i < cmn::plotcirc_discr; ++i )
         {
-                pc_map_t const & begins = m_impl->begins[i];
-                pc_map_t const & ends = m_impl->ends[i];
+                cmn::plotcirc_db_map_t const & begins = pcd->begins[i];
+                cmn::plotcirc_db_map_t const & ends = pcd->ends[i];
                 std::vector< cmn::point2f_t > const & row_src = test->rows[i];
                 
                 for( size_t j = 0; j != row_src.size(); ++j )
                 {
                         cmn::point2f_t const & point_src = row_src[j];
                         
-                        pc_map_t::const_iterator fb = m_impl->begins[i].lower_bound( point_src.x );
+                        cmn::plotcirc_db_map_t::const_iterator fb = pcd->begins[i].lower_bound( point_src.x );
                         record_weight( weights, to_collect, point_src.x, fb, begins );
                         
-                        pc_map_t::const_iterator fe = m_impl->ends[i].lower_bound( point_src.x );
+                        cmn::plotcirc_db_map_t::const_iterator fe = pcd->ends[i].lower_bound( point_src.x );
                         record_weight( weights, to_collect, point_src.x, fe, begins );
 
                 }                
@@ -141,7 +127,7 @@ void plotcirc_db_t::find( plotcirc_find_vt * res, int find_nth_best, cmn::plotci
         {                
                 float hypotenuse_pat = sqrt( j->second->img_size.sq() );
 
-                plotcirc_find_t f;
+                cmn::plotcirc_find_t f;
                 f.plotcirc = j->second;
                 f.cmp_res.diff = j->first;                                          
                 f.cmp_res.scale = hypotenuse_test / hypotenuse_pat;

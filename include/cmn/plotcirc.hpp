@@ -2,6 +2,8 @@
 #include "fwd.hpp"
 #include <cmn/point.hpp>
 #include <vector>
+#include <map>
+#include <set>
 
 //abbreviation of a circulat plot
 namespace cmn
@@ -45,6 +47,28 @@ plotcirc_pt    plotcirc_create( image_pt const & img, point2f_t weight_center );
 
 //see in adapter / plotcirc.hpp
 //void           plotcirc_print( plotcirc_pt const & pc, std::string const & path );
+
+
+//database part
+
+struct plotcirc_find_t
+{
+        cmn::plotcirc_pt     plotcirc;
+        cmn::plotcirc_cmp_t  cmp_res;        
+};
+
+typedef std::vector<plotcirc_find_t> plotcirc_find_vt;
+
+
+typedef std::multimap< float, cmn::plotcirc_pt > plotcirc_db_map_t;
+struct plotcirc_db_t
+{
+        plotcirc_db_map_t        begins[cmn::plotcirc_discr];
+        plotcirc_db_map_t        ends[cmn::plotcirc_discr];
+        std::set<plotcirc_pt>    plotcircs;
+};
+
+//typedef std::shared_ptr<plotcirc_db_t> plotcirc_db_pt; fwd.hpp
 
 
 }
