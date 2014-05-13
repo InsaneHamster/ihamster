@@ -65,5 +65,14 @@ cmn::image_pt image_create_from_png( char const * szImgPath )
 }
 
 }
+	
+bool image_save_to_png( cmn::image_pt const & img, char const * szImgPath )
+{
+	bool ok = false;
+
+	// TODO: stub -VM
+	
+	return ok;
+}
     
 } //adapter

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21061EE1191F6862006B790E /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043818AF982600A16CB4 /* image.cpp */; };
+		21187ECF192202F600B0D5CD /* plotcirc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21187ECE192202F600B0D5CD /* plotcirc.cpp */; };
 		21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FB191F5F0700A16A86 /* filter.cpp */; };
 		21D2B1FE191F5F0700A16A86 /* plotcirc_db.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FC191F5F0700A16A86 /* plotcirc_db.cpp */; };
 		21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FF191F5F3000A16A86 /* image_utils.cpp */; };
@@ -35,6 +35,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		21187ECE192202F600B0D5CD /* plotcirc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plotcirc.cpp; sourceTree = "<group>"; };
+		21187ED01922032100B0D5CD /* plotcirc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = plotcirc.hpp; sourceTree = "<group>"; };
 		21D2B1F5191F5EAC00A16A86 /* filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filter.hpp; sourceTree = "<group>"; };
 		21D2B1F6191F5EAC00A16A86 /* plotcirc_db.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = plotcirc_db.hpp; sourceTree = "<group>"; };
 		21D2B1F7191F5ECD00A16A86 /* image_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = image_utils.hpp; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 		5ADE043718AF982600A16CB4 /* adapter */ = {
 			isa = PBXGroup;
 			children = (
+				21187ECE192202F600B0D5CD /* plotcirc.cpp */,
 				5ADE043818AF982600A16CB4 /* image.cpp */,
 			);
 			path = adapter;
@@ -204,6 +207,7 @@
 		5ADE044E18AF987300A16CB4 /* adapter */ = {
 			isa = PBXGroup;
 			children = (
+				21187ED01922032100B0D5CD /* plotcirc.hpp */,
 				5ADE044F18AF987300A16CB4 /* image.hpp */,
 			);
 			path = adapter;
@@ -320,9 +324,9 @@
 				21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */,
 				5ADE044A18AF982600A16CB4 /* watershed.cpp in Sources */,
 				5ADE044B18AF982600A16CB4 /* main.cpp in Sources */,
-				21061EE1191F6862006B790E /* image.cpp in Sources */,
 				5ADE044C18AF982600A16CB4 /* log.cpp in Sources */,
 				5ADE046018AFA00B00A16CB4 /* image.mm in Sources */,
+				21187ECF192202F600B0D5CD /* plotcirc.cpp in Sources */,
 				21D2B203191F5F3000A16A86 /* image.cpp in Sources */,
 				21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */,
 			);
