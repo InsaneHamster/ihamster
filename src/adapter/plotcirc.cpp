@@ -37,7 +37,7 @@ bool plotcirc_save_to_png( cmn::plotcirc_pt const & pc, char const * const szImg
                 cmn::color4b_t * const row_dst = img->row<cmn::color4b_t>(y);
                 int const row_index_src = y / scale;
                 std::vector< cmn::point2f_t > const & row_src = pc->rows[row_index_src];                
-                int const row_src_size = row_src.size();                                
+                size_t const row_src_size = row_src.size();
                 
                 //make-half transparent drawing...                
                 for( int i = 0; i < row_src_size; ++i )
