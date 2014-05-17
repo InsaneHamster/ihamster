@@ -13,6 +13,7 @@
 		21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FF191F5F3000A16A86 /* image_utils.cpp */; };
 		21D2B203191F5F3000A16A86 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B200191F5F3000A16A86 /* image.cpp */; };
 		21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B201191F5F3000A16A86 /* plotcirc.cpp */; };
+		21FB64A519274A4E00B2F651 /* sqlite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21FB64A419274A4E00B2F651 /* sqlite.cpp */; };
 		5ADE044918AF982600A16CB4 /* pattern_study.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043B18AF982600A16CB4 /* pattern_study.cpp */; };
 		5ADE044A18AF982600A16CB4 /* watershed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043D18AF982600A16CB4 /* watershed.cpp */; };
 		5ADE044B18AF982600A16CB4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043F18AF982600A16CB4 /* main.cpp */; };
@@ -49,6 +50,8 @@
 		21D2B200191F5F3000A16A86 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
 		21D2B201191F5F3000A16A86 /* plotcirc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plotcirc.cpp; sourceTree = "<group>"; };
 		21D2B205191F5F8C00A16A86 /* coding_convention.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = coding_convention.txt; path = ../../doc/coding_convention.txt; sourceTree = "<group>"; };
+		21FB64A319274A1900B2F651 /* sqlite.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sqlite.hpp; sourceTree = "<group>"; };
+		21FB64A419274A4E00B2F651 /* sqlite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite.cpp; sourceTree = "<group>"; };
 		5ADE042C18AF973D00A16CB4 /* iHamster */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = iHamster; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ADE043818AF982600A16CB4 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
 		5ADE043B18AF982600A16CB4 /* pattern_study.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pattern_study.cpp; sourceTree = "<group>"; };
@@ -132,6 +135,7 @@
 		5ADE043718AF982600A16CB4 /* adapter */ = {
 			isa = PBXGroup;
 			children = (
+				21FB64A419274A4E00B2F651 /* sqlite.cpp */,
 				21187ECE192202F600B0D5CD /* plotcirc.cpp */,
 				5ADE043818AF982600A16CB4 /* image.cpp */,
 			);
@@ -207,6 +211,7 @@
 		5ADE044E18AF987300A16CB4 /* adapter */ = {
 			isa = PBXGroup;
 			children = (
+				21FB64A319274A1900B2F651 /* sqlite.hpp */,
 				21187ED01922032100B0D5CD /* plotcirc.hpp */,
 				5ADE044F18AF987300A16CB4 /* image.hpp */,
 			);
@@ -319,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				21D2B1FE191F5F0700A16A86 /* plotcirc_db.cpp in Sources */,
+				21FB64A519274A4E00B2F651 /* sqlite.cpp in Sources */,
 				5ADE044918AF982600A16CB4 /* pattern_study.cpp in Sources */,
 				21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */,
 				21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */,
