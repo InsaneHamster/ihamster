@@ -22,7 +22,13 @@ struct sqlite_db_t
         
 typedef std::shared_ptr<sqlite_db_t> sqlite_db_pt;
         
-sqlite_db_pt    sqlite_db_create( std::string const & dbpath );
+enum open_mode_et
+{
+        open_mode_read,
+        open_mode_read_write
+};
+
+sqlite_db_pt    sqlite_db_create( std::string const & dbpath, open_mode_et mode );
 void            sqlite_db_query(sqlite_db_pt const & db, char const * szQuery );                //without result...
 
 
@@ -35,32 +41,41 @@ struct sqlite_query_t
 };
 typedef std::shared_ptr<sqlite_query_t> sqlite_query_pt;
 
-
-sqlite_query_pt sqlite_query_create( sqlite_db_pt const & db, char const * szQuery );
-
-//or bind
-//index here is 1-based! [sqlite requirement]
-//buf points to blob!
-void sqlite_query_embed(sqlite_query_pt const & q, int one_based_index, void const * buf, size_t size );
-
 struct blob_t
 {
         void * ptr;
         size_t size;
 };
 
+
+sqlite_query_pt sqlite_query_create( sqlite_db_pt const & db, char const * szQuery );
+
+//or bind
+//index here is 1-based! [sqlite requirement]
+//buf points to blob or int... or see below in sqlite_query_column
+void sqlite_query_embed(sqlite_query_pt const & q, void const * buf, std::type_info const & ti, int one_based_index );
+
+template<typename T> void
+sqlite_query_embed(sqlite_query_pt const & q, T const &t, int one_based_index )
+{
+     sqlite_query_embed( q, &t, typeid(T), one_based_index );   
+}
+
+
+//@return - true - go on, false - the end
+bool sqlite_query_next( sqlite_query_pt const & q );
+
 //types supported fot std::type_info const & ti:
 //blob_t - blob. in this case ptr should be void** and pointer returned will be valid until next call of sqlite_query_next
 //std::string, int64_t, double
 //@column - zero based
-//@return - true - go on, false - the end
-bool sqlite_query_next( void * ptr, sqlite_query_pt const & q, std::type_info const & ti, int column  );
+void sqlite_query_column( void * ptr, sqlite_query_pt const & q, std::type_info const & ti, int column  );
 
 //@return - true - go on, false - the end
-template<typename T> bool 
-sqlite_query_next( T * t, sqlite_query_pt const & q, int column )
+template<typename T> void 
+sqlite_query_column( T * t, sqlite_query_pt const & q, int column )
 {        
-        return sqlite_query_next((void*)t, q, typeid(T), column );
+        sqlite_query_column((void*)t, q, typeid(T), column );
 }
 
 //to reuse

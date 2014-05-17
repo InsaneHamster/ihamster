@@ -1,6 +1,7 @@
 #pragma once
 #include "fwd.hpp"
 #include <cmn/point.hpp>
+#include <cmn/name.hpp>
 #include <vector>
 #include <map>
 #include <set>
@@ -17,9 +18,10 @@ enum { plotcirc_discr = 32 };         //discretization of circular plot, each po
 //segements are normalized - that is maximum size = 1, normalization is made by hypotenuse
 struct plotcirc_t
 {
+        name_t                   name = name_default();
         point2i_t                img_size;                      //original
         std::vector< point2f_t > rows[plotcirc_discr];
-        int                      numpoints = 0;
+        int                      num_segments = 0;
         
 };
 
@@ -43,7 +45,7 @@ struct plotcirc_cmp_t
 
 
 //image has to be binary and purified
-plotcirc_pt    plotcirc_create( image_pt const & img, point2f_t weight_center );
+plotcirc_pt    plotcirc_create( image_pt const & img, point2f_t weight_center, name_t name = name_default() );
 
 //see in adapter / plotcirc.hpp
 //void           plotcirc_print( plotcirc_pt const & pc, std::string const & path );

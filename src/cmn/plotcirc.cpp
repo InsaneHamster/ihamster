@@ -65,17 +65,18 @@ trace(     plotcirc_t * const pt_row, int img_dst_row,
         
         //sort this
         std::sort( pt_row->rows[img_dst_row].begin(), pt_row->rows[img_dst_row].end(), plotcirc_length_sort_t() );
-        pt_row->numpoints += (int)pt_row->rows[img_dst_row].size();
+        pt_row->num_segments += (int)pt_row->rows[img_dst_row].size();
 }
 
 plotcirc_pt    
-plotcirc_create( image_pt const & img, point2f_t weight_center )
+plotcirc_create( image_pt const & img, point2f_t weight_center, name_t name )
 {        
         image_header_t const & hs = img->header;
         //int width = find_max_distance( hs, weight_center ); //hs.width * hs.width + hs.height * hs.height;
         
         plotcirc_pt pt = std::make_shared<plotcirc_t>();        
         plotcirc_t * pt_row = pt.get();
+        pt_row->name = name;
         pt_row->img_size = point2i_t( hs.width, hs.height );
                         
         float angle_step = 2 * M_PI / plotcirc_discr;

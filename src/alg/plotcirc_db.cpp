@@ -113,7 +113,7 @@ void plotcirc_db_find( cmn::plotcirc_find_vt * res, int find_nth_best, cmn::plot
         {
                 cmn::plotcirc_pt const & pc = i->first;
                 plotcirc_weight_t const & pw = i->second;
-                int diff = pc->numpoints - pw.found_dots / 2;
+                int diff = pc->num_segments - pw.found_dots / 2;
                 //how large penalty will we assign for each missing dot ?
                 float penalty = diff * 0.1f;    //1.f - is hypotenuse of the image
                 float err = (penalty + pw.weight)/cmn::plotcirc_discr;

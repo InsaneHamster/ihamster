@@ -40,7 +40,10 @@ inline std::string name_print( name_t const & n )
 	return n.name[name_t::c_chars-1] == 0 ? std::string(n.name) : std::string(n.name, name_t::c_chars); 
 }
 
+inline constexpr name_t name_default() { return name_t{ { {0, 0} } }; };
+
 }	//end of namespace cmn
+
 
 
 //providing hash for the name_t
