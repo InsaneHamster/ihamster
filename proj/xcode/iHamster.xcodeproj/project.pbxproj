@@ -413,7 +413,10 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "-lpng";
+				OTHER_LDFLAGS = (
+					"-lpng",
+					"-lsqlite3",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -460,7 +463,10 @@
 					/opt/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				OTHER_LDFLAGS = "-lpng";
+				OTHER_LDFLAGS = (
+					"-lpng",
+					"-lsqlite3",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
