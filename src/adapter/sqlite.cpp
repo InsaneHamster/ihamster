@@ -132,7 +132,9 @@ void sqlite_query_column( void * ptr, sqlite_query_pt const & q, std::type_info 
 
 bool sqlite_query_reset( sqlite_query_pt const & q )
 {
-        sqlite3_reset( q->stm_handle );
+	int res = sqlite3_reset( q->stm_handle );
+	
+	return res == SQLITE_OK;
 }
 
 }
