@@ -23,17 +23,16 @@ std::string log_in_string(char const * format, ...)
 {
         va_list list;
         va_start( list, format );
-        std::string ret = log_in_string( format, list );
+        std::string ret = log_in_string_v( format, list );
         va_end( list );
         return ret;
 }
 
 std::string log_in_string_v( const char* format, va_list vl )
 {
-        int n = vsnprintf( 0, n, format, vl );
+        int n = vsnprintf( 0, 0, format, vl );
         std::string ret(n,' ');
-        //vsnprintf( &ret[0], n+1, )
- 
+		vsnprintf( &ret[0], n, format, vl );
         return ret;
 }
 
