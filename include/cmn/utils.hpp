@@ -8,5 +8,4 @@ namespace cmn
         {
                 return ((val - 1) & ~(alignment - 1)) + alignment;
         }
-        
 }
