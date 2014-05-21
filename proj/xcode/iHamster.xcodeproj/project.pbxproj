@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21167000192C74DC00E57781 /* filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21166FFF192C74DC00E57781 /* filesystem.cpp */; };
 		21187ECF192202F600B0D5CD /* plotcirc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21187ECE192202F600B0D5CD /* plotcirc.cpp */; };
 		218F30031927AE7D00B11317 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 218F2FF31927AD5300B11317 /* main.cpp */; };
 		218F30041927AE9600B11317 /* image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE045F18AFA00B00A16CB4 /* image.mm */; };
@@ -29,6 +30,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		21166FFD192C743800E57781 /* filesystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filesystem.hpp; sourceTree = "<group>"; };
+		21166FFE192C749C00E57781 /* apply.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = apply.hpp; sourceTree = "<group>"; };
+		21166FFF192C74DC00E57781 /* filesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filesystem.cpp; sourceTree = "<group>"; };
 		21187ECE192202F600B0D5CD /* plotcirc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plotcirc.cpp; sourceTree = "<group>"; };
 		21187ED01922032100B0D5CD /* plotcirc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = plotcirc.hpp; sourceTree = "<group>"; };
 		218F2FF31927AD5300B11317 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/test/image_open_save/main.cpp; sourceTree = "<group>"; };
@@ -159,6 +163,7 @@
 		5ADE043718AF982600A16CB4 /* adapter */ = {
 			isa = PBXGroup;
 			children = (
+				21166FFF192C74DC00E57781 /* filesystem.cpp */,
 				21FB64A419274A4E00B2F651 /* sqlite.cpp */,
 				21187ECE192202F600B0D5CD /* plotcirc.cpp */,
 				5ADE043818AF982600A16CB4 /* image.cpp */,
@@ -235,6 +240,7 @@
 		5ADE044E18AF987300A16CB4 /* adapter */ = {
 			isa = PBXGroup;
 			children = (
+				21166FFD192C743800E57781 /* filesystem.hpp */,
 				21FB64A319274A1900B2F651 /* sqlite.hpp */,
 				21187ED01922032100B0D5CD /* plotcirc.hpp */,
 				5ADE044F18AF987300A16CB4 /* image.hpp */,
@@ -258,6 +264,7 @@
 		5ADE045518AF987300A16CB4 /* cmn */ = {
 			isa = PBXGroup;
 			children = (
+				21166FFE192C749C00E57781 /* apply.hpp */,
 				21D2B1F7191F5ECD00A16A86 /* image_utils.hpp */,
 				21D2B1F8191F5ECD00A16A86 /* point.hpp */,
 				21D2B1F9191F5ECD00A16A86 /* rect.hpp */,
@@ -385,6 +392,7 @@
 				21187ECF192202F600B0D5CD /* plotcirc.cpp in Sources */,
 				21D2B203191F5F3000A16A86 /* image.cpp in Sources */,
 				21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */,
+				21167000192C74DC00E57781 /* filesystem.cpp in Sources */,
 				218F30081927AFCC00B11317 /* image.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
