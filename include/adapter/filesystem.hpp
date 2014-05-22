@@ -21,8 +21,11 @@ namespace adapter
         };
                                 
         std::string fs_executable_name();
-                
+                 
         std::string fs_executable_dir(delimiter_add_et da = delimiter_add);
+        
+        //currently ==executable on linux (potenrially /usr/share/ihamser), mac - resource folder in a bundle
+        std::string fs_resource_dir(delimiter_add_et da = delimiter_add);
 
         //do u like lisp ?
         //get last component of a path, that is /usr/lib/libslite3.so will return libslite3.so

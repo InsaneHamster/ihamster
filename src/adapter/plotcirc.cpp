@@ -71,14 +71,12 @@ bool plotcirc_save_to_png( cmn::plotcirc_pt const & pc, char const * const szImg
         return ok;
 }
 
-static std::string const g_sqlite_db_name = "ihamster.db";
-
-sqlite_db_pt open_and_create_db( open_mode_et mode )
+sqlite_db_pt open_and_create_db( std::string const & db_path, open_mode_et mode )
 {
-        sqlite_db_pt db = sqlite_db_create( g_sqlite_db_name, mode );
+        sqlite_db_pt db = sqlite_db_create( db_path, mode );
         if( mode == open_mode_read_write )
         {
-                sqlite_db_query( db, "CREATE TABLE IF NOT EXISTS plotcircs ( name TEXT, width INTEGER, height INTEGER, value BLOB, num_segments INTEGER )" );
+                sqlite_db_query( db, "CREATE TABLE IF NOT EXISTS plotcircs ( name TEXT, width INTEGER, height INTEGER, value BLOB, num_segments INTEGER, name_sub INTEGER )" );
         }
         
         return db;
@@ -100,7 +98,7 @@ void plotcirc_db_import_from_sqlite( cmn::plotcirc_db_pt const & pcd, std::strin
         {
                 static char const select_protcircs[] = "SELECT * FROM plotcircs";
                 
-                sqlite_db_pt db = open_and_create_db( open_mode_read );
+                sqlite_db_pt db = open_and_create_db( db_path, open_mode_read );
                 sqlite_query_pt q = sqlite_query_create( db, select_protcircs );
                                                 
                 blob_t b;
@@ -115,6 +113,7 @@ void plotcirc_db_import_from_sqlite( cmn::plotcirc_db_pt const & pcd, std::strin
                         sqlite_query_column( &pc->img_size.y, q, 2 );
                         sqlite_query_column( &b, q, 3 );
                         sqlite_query_column( &pc->num_segments, q, 4 );
+                        sqlite_query_column( &pc->name_sub, q, 5 );
                         
                         //parse tail...
                         pc->name = cmn::name_create( name.c_str() );
@@ -138,9 +137,9 @@ void plotcirc_db_import_from_sqlite( cmn::plotcirc_db_pt const & pcd, std::strin
 
 void plotcirc_db_export_to_sqlite( cmn::plotcirc_db_pt const & pcd, std::string const & db_path )
 {
-        static char const insert_plotcirc[] = "INSERT INTO plotcircs(name,width,height,value,num_segments) VALUES(?,?,?,?,?)";
+        static char const insert_plotcirc[] = "INSERT INTO plotcircs(name,width,height,value,num_segments,name_sub) VALUES(?,?,?,?,?,?)";
         
-        sqlite_db_pt db = open_and_create_db( open_mode_read_write );
+        sqlite_db_pt db = open_and_create_db( db_path, open_mode_read_write );
         sqlite_query_pt q = sqlite_query_create( db, insert_plotcirc );
         
         std::vector<uint8_t> buf;
@@ -173,6 +172,7 @@ void plotcirc_db_export_to_sqlite( cmn::plotcirc_db_pt const & pcd, std::string 
                 sqlite_query_embed( q, pc->img_size.y, 3 );
                 sqlite_query_embed( q, b, 4 );
                 sqlite_query_embed( q, pc->num_segments, 5);
+                sqlite_query_embed( q, pc->name_sub, 6);
                 
                 bool call_one_more_time = sqlite_query_next(q);            //or step..
                 if( call_one_more_time )

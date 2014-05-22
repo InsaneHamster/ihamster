@@ -12,6 +12,7 @@ include_directories(${PNG_INCLUDE_DIR})
 include_directories("../include")
 
 set(IHAMSTER_CPP_FILES 
+	adapter/config.cpp
 	adapter/filesystem.cpp
 	adapter/image.cpp
 	adapter/plotcirc.cpp

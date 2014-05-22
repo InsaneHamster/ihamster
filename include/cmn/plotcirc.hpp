@@ -22,7 +22,7 @@ struct plotcirc_t
         point2i_t                img_size;                      //original
         std::vector< point2f_t > rows[plotcirc_discr];
         int                      num_segments = 0;
-        
+        int                      name_sub = 0;                  //subname aka number
 };
 
 struct plotcirc_length_sort_t

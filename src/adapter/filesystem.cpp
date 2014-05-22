@@ -36,6 +36,11 @@ std::string fs_executable_dir( delimiter_add_et da )
         return folder;        
 }
 
+std::string fs_resource_dir(delimiter_add_et da )
+{
+        return fs_executable_dir(da);
+}
+
 
 std::string fs_reverse_car( std::string const & path )
 {

@@ -15,8 +15,9 @@ struct plotcirc_weight_t
         
 
         
-void plotcirc_db_t_add( cmn::plotcirc_db_pt const & pcd, cmn::plotcirc_pt const & pc )
+void plotcirc_db_add( cmn::plotcirc_db_pt const & pcd, cmn::plotcirc_pt const & pc )
 {
+        pcd->plotcircs.insert(pc);
         for( int i = 0; i < cmn::plotcirc_discr; ++i )
         {
              std::vector< cmn::point2f_t > const & vv = pc->rows[i];
