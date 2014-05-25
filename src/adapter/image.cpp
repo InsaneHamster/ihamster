@@ -16,7 +16,7 @@ namespace adapter
 cmn::image_pt image_create_from_png( char const * szImgPath )
 {
         cmn::image_root_pt img( new cmn::image_root_t );        
-        char unsigned header[8];    // 8 is the maximum size that can be checked
+        char unsigned header[8]={0};    // 8 is the maximum size that can be checked
         
         png_structp png_ptr;        
         png_infop   info_ptr;

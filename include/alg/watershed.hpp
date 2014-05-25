@@ -20,6 +20,7 @@ struct watershed_object_t
 //on output: binary masks of found images. ready to pass to pattern matching
 //on ouput optionally: colored image to output for debug or other purposes. 
 void watershed( std::vector< watershed_object_t > * objects, cmn::image_pt * colored, cmn::image_pt const & img );
+void watershed2( std::vector< watershed_object_t > * objects, cmn::image_pt * colored, cmn::image_pt const & img );
 
 
 void watershed_object_save_to_png( watershed_object_t const * wo, char const * szPath ); //to png file
