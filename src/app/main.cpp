@@ -32,21 +32,14 @@ int main()
         alg::watershed_objects_save_to_png( wo, dir_objects );
         
         cmn::plotcirc_pt pc = cmn::plotcirc_create( wo[3].img, wo[3].wc );        
+        pc->name = cmn::name_create("face");
+        pc->name_sub = 0;
         adapter::plotcirc_save_to_png( pc, (dir_objects + "face.png").c_str() );
                 
         cmn::plotcirc_db_pt pcd = std::make_shared<cmn::plotcirc_db_t>();
         alg::plotcirc_db_add( pcd, pc );
         
-        //adapter::plotcirc_db_export_to_sqlite( pcd, sqlite_db_path );
-        
-        
-        cmn::plotcirc_db_pt pcd2 = std::make_shared<cmn::plotcirc_db_t>();
-        adapter::plotcirc_db_import_from_sqlite( pcd, sqlite_db_path );
-        if(!pcd2->plotcircs.empty())
-        {
-                cmn::plotcirc_pt pc2 = *pcd2->plotcircs.begin();
-                int a = 10; ++a;
-        }
+        //alg::plotcirc_db_export_to_sqlite( pcd, sqlite_db_path );
         
         return 0;
 }

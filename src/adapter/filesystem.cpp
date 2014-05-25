@@ -97,4 +97,12 @@ std::string fs_prefs_dir(delimiter_add_et da)
          return ret;
 }
 
+
+//**********************************  won't work on windows, but we are not going on to run on it now, right ?
+void fs_dir_contents( std::vector<file_info_t> * files, std::string const & folder )
+{
+        //DIR d = opendir();
+}
+
+
 } //end of namespace adapter

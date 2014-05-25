@@ -118,16 +118,19 @@ void sqlite_query_column( void * ptr, sqlite_query_pt const & q, std::type_info 
         else if( ti == typeid(std::string) )      
         {
                 int len = sqlite3_column_bytes( stm_handle, column );
-                (*(std::string*)ptr) = std::string( (char const*)sqlite3_column_text( stm_handle, column ), len );        
+                if( len )                
+                        (*(std::string*)ptr) = std::string( (char const*)sqlite3_column_text( stm_handle, column ), len );
+                else
+                        (*(std::string*)ptr).clear();                                
         }
         else if( ti == typeid(int64_t) )        
                 (*(int64_t*)ptr) = sqlite3_column_int64( stm_handle, column );        
         else if( ti == typeid(int) )        
                 (*(int*)ptr) = sqlite3_column_int( stm_handle, column );        
         else if( ti == typeid(double) )        
-                (*(double*)ptr) = sqlite3_column_double( stm_handle, column );        
-        
-        cmn::log_and_throw<sqlite_exception>("adapter::sqlite_query_fetch - type: %s for fetching from db is not supported", ti.name() );
+                (*(double*)ptr) = sqlite3_column_double( stm_handle, column );
+        else
+                cmn::log_and_throw<sqlite_exception>("adapter::sqlite_query_fetch - type: %s for fetching from db is not supported", ti.name() );
 }
 
 bool sqlite_query_reset( sqlite_query_pt const & q )

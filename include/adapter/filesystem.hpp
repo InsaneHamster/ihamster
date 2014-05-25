@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <stdexcept>
+#include <memory>
+#include <vector>
 
 namespace adapter 
 {
@@ -40,4 +42,21 @@ namespace adapter
         
         //here database with images/patters will be stored, as well as all debug output
         std::string fs_prefs_dir(delimiter_add_et da = delimiter_add);  //on linux ~/.ihamser
+        
+        
+        enum file_type_e
+        {
+                file_type_file,
+                file_type_folder
+        };
+
+        struct file_info_t
+        {
+                std::string     name;
+                file_type_e     type;
+        };
+        
+        //read contents of a directory. non-recursive, all in a time
+        void fs_dir_contents( std::vector<file_info_t> * files, std::string const & folder );
+        
 }
