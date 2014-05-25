@@ -12,6 +12,7 @@ struct watershed_object_t
         cmn::point2i_t  lt;                      //left-top position in original image
         cmn::image_pt   img;                     //bitmask in format cmn::format_bw . White means presence of an object       
         cmn::point2f_t  wc;                     //wc is weight center - center of mass x,y in img. not a watercloset as you can think!
+        int32_t         square;                 //number of pixels in the object
         //cmn::point2f_t  dir;             //direction of longest axis in the object. source is in x_wc, y_wc (see Linear Least Squares method) 
 };
 

@@ -9,10 +9,10 @@
 #include <string>
 #include <string.h>
 
-static short    const   c_ws_max_pix_diff = 30;                 //if difference is less, we assume it's a same object (watershed)
-static short    const   c_ws_crit_pix_diff = 640;               //if difference is larger its definitely a sharp border
-static double   const   c_pl_max_square = 0.001;                //amount of square after which we think it's a separate object (plain filling)
-static short    const   c_pl_max_pix_diff = 50; //30;           //same as c_ws_max_pix_diff but during plain filling. also module is taken (only positive values acceptable)
+static short    const   c_ws_max_pix_diff = 3;           //if difference is less, we assume it's a same object (watershed)
+static short    const   c_ws_crit_pix_diff = 640;         //if difference is larger its definitely a sharp border
+static double   const   c_pl_max_square = 0.001;          //amount of square after which we think it's a separate object (plain filling)
+static short    const   c_pl_max_pix_diff = 50;           //same as c_ws_max_pix_diff but during plain filling. also module is taken (only positive values acceptable)
 
 namespace alg
 {
@@ -448,6 +448,7 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                 
                 wo.wc.x /= dots;
                 wo.wc.y /= dots;
+                wo.square = dots;
         }        
 }
 

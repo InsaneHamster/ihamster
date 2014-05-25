@@ -44,19 +44,20 @@ namespace adapter
         std::string fs_prefs_dir(delimiter_add_et da = delimiter_add);  //on linux ~/.ihamser
         
         
-        enum file_type_e
+        enum fs_file_type_e
         {
-                file_type_file,
-                file_type_folder
+                fs_file_type_file,
+                fs_file_type_dir
         };
 
-        struct file_info_t
+        struct fs_file_info_t
         {
                 std::string     name;
-                file_type_e     type;
+                fs_file_type_e  type;
         };
         
-        //read contents of a directory. non-recursive, all in a time
-        void fs_dir_contents( std::vector<file_info_t> * files, std::string const & folder );
+        //read contents of a directory. non-recursive, all in a time, skips hidden/special files
+        //links are stated and resolved to file/directory
+        void fs_dir_contents( std::vector<fs_file_info_t> * files, std::string const & dir );
         
 }

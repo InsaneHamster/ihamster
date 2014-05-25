@@ -4,8 +4,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <cerrno>
 #include <stdlib.h>
+#include <stddef.h>
 
 
 namespace adapter
@@ -99,9 +101,72 @@ std::string fs_prefs_dir(delimiter_add_et da)
 
 
 //**********************************  won't work on windows, but we are not going on to run on it now, right ?
-void fs_dir_contents( std::vector<file_info_t> * files, std::string const & folder )
+void fs_dir_contents( std::vector<fs_file_info_t> * files, std::string const & dir )
 {
-        //DIR d = opendir();
+        DIR * d = opendir( dir.c_str() );
+        if( !d )
+                cmn::log_and_throw<fs_execption>( errno, "adapter::fs_dir_contents - can't open dir %s, errno: %d", dir.c_str(), errno );
+        
+        int dir_df = dirfd(d);
+        
+        size_t name_max = pathconf(dir.c_str(), _PC_NAME_MAX);
+        if (name_max == -1)         /* Limit not defined, or error */
+               name_max = 255;         /* Take a guess */               //YS: I suspect it might cause buffer overflow though...
+        size_t len = offsetof(struct dirent, d_name) + name_max + 1;
+        dirent * entryp = (dirent*)malloc(len);
+        dirent * gottendata(0);
+        std::string filename; 
+        
+        do
+        {
+                int err = readdir_r( d, entryp, &gottendata );
+                if( err )
+                {
+                        free(entryp);
+                        closedir(d);
+                        cmn::log_and_throw<fs_execption>( err, "adapter::fs_dir_contents - readdir_r returned: %d", err );
+                }
+        
+                if( gottendata )
+                {                        
+                        fs_file_info_t fi;                        
+                        fi.name = gottendata->d_name;
+                 
+                        bool skip = fi.name[0] == '.';
+                        
+                        if( !skip )
+                        switch( gottendata->d_type )
+                        {
+                                case DT_UNKNOWN:
+                                case DT_LNK:
+                                {
+                                        struct stat s;
+                                        filename = dir + PATH_DELIMITER_C + fi.name;
+                                        err = stat( filename.c_str(), &s );
+                                        if( err )                                        
+                                                skip = true;            //bad file!
+                                        else
+                                        {
+                                                if( S_ISREG(s.st_mode) )
+                                                        fi.type = fs_file_type_file;
+                                                else if( S_ISDIR(s.st_mode) )
+                                                        fi.type = fs_file_type_dir;
+                                                else
+                                                        skip = true;
+                                        }
+                                }
+                                case DT_REG: fi.type = fs_file_type_file; break;
+                                case DT_DIR: fi.type = fs_file_type_dir; break;
+                                default: skip = true;                                        
+                        }
+                        
+                        if( !skip )                        
+                                files->push_back( fi );
+                }
+        } while( gottendata );
+        
+        free(entryp);
+        closedir(d);
 }
 
 
