@@ -68,6 +68,7 @@ static void write_objects( std::string const & seq )
         
 }
 
+#if 0
 int main( int argc, char const * argv[] )
 {
         std::string dir_src = adapter::fs_resource_dir() + "pictures/faces_png";
@@ -76,38 +77,13 @@ int main( int argc, char const * argv[] )
 
         find_objects( dir_objects, dir_src );
 }
+#endif
 
 
-#if 0
+#if 1
 int main()
 {
-        std::string dir_src = adapter::fs_resource_dir() + "pictures/";
-        std::string dir_dst = adapter::fs_prefs_dir();
-        std::string dir_objects = dir_dst + "objects/";
-        std::string sqlite_db_path = adapter::config_sqlite_db_path();
-        
-        adapter::fs_make_dir( dir_objects );
-                
-        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "c.png").c_str() );
-        
-        std::vector< alg::watershed_object_t > wo;
-        cmn::image_pt img_watershed;
-        alg::watershed( &wo, &img_watershed, img );
-        
-        adapter::image_save_to_png( img_watershed, (dir_dst + "a_colored.png").c_str() );
-        printf("found %d objects\n", (int)wo.size());
-    
-        alg::watershed_objects_save_to_png( wo, dir_objects );
-        
-        cmn::plotcirc_pt pc = cmn::plotcirc_create( wo[3].img, wo[3].wc );        
-        pc->name = cmn::name_create("face");
-        pc->name_sub = 0;
-        adapter::plotcirc_save_to_png( pc, (dir_objects + "face.png").c_str() );
-                
-        cmn::plotcirc_db_pt pcd = std::make_shared<cmn::plotcirc_db_t>();
-        alg::plotcirc_db_add( pcd, pc );
-        
-        //alg::plotcirc_db_export_to_sqlite( pcd, sqlite_db_path );
+        alg::watershed_test();
         
         return 0;
 }

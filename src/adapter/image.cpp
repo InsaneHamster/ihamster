@@ -32,13 +32,13 @@ cmn::image_pt image_create_from_png( char const * szImgPath )
         FILE *fp = fopen(szImgPath, "rb");
         if (!fp)
         {
-                cmn::log("image_create_from_png: file %s could not be opened for reading", szImgPath);
+                cmn::log("image_create_from_png: file %s could not be opened for reading", szImgPath); img.reset();
                 goto unwind_00;
         }
         fread(header, 1, 8, fp);
         if (png_sig_cmp(header, 0, 8))
         {
-                cmn::log("image_create_from_png: file %s is not recognized as a PNG file", szImgPath);
+                cmn::log("image_create_from_png: file %s is not recognized as a PNG file", szImgPath); img.reset();
                 goto unwind_01;
         }
 
@@ -47,20 +47,20 @@ cmn::image_pt image_create_from_png( char const * szImgPath )
 
         if (!png_ptr)
         {
-                cmn::log("image_create_from_png: png_create_read_struct failed");
+                cmn::log("image_create_from_png: png_create_read_struct failed"); img.reset();
                 goto unwind_01;
         }
 
         info_ptr = png_create_info_struct(png_ptr);
         if (!info_ptr)
         {
-                cmn::log("image_create_from_png: png_create_info_struct failed");
+                cmn::log("image_create_from_png: png_create_info_struct failed"); img.reset();
                 goto unwind_02;
         }
 
         if (setjmp(png_jmpbuf(png_ptr)))
         {
-                cmn::log("image_create_from_png: error during init_io");
+                cmn::log("image_create_from_png: error during init_io"); img.reset();
                 goto unwind_03;
         }
 
@@ -92,7 +92,7 @@ cmn::image_pt image_create_from_png( char const * szImgPath )
         /* read file */
         if (setjmp(png_jmpbuf(png_ptr)))
         {
-                cmn::log("image_create_from_png: error during read_image");
+                cmn::log("image_create_from_png: error during read_image"); img.reset();
                 goto unwind_03;
         }
 

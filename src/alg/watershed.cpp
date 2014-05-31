@@ -9,6 +9,13 @@
 #include <string>
 #include <string.h>
 
+//for tests
+#include <adapter/filesystem.hpp>
+#include <adapter/plotcirc.hpp>
+#include <cmn/name.hpp>
+#include <cmn/plotcirc.hpp>
+
+
 static short    const   c_ws_max_pix_diff = 3;           //if difference is less, we assume it's a same object (watershed)
 static short    const   c_ws_crit_pix_diff = 640;         //if difference is larger its definitely a sharp border
 static double   const   c_pl_max_square = 0.001;          //amount of square after which we think it's a separate object (plain filling)
@@ -378,10 +385,10 @@ watershed_outer( helper_t & h )
         }
 }
 
-static void
-waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t & h )
+void
+watershed_create_objects( std::vector< watershed_object_t > * objects, uint16_t max_color, cmn::image_pt img_quantized )
 {
-        if( !h.color )
+        if( !max_color )
                 return;
         
         struct bounding_box_t
@@ -389,10 +396,10 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                 int l, t, r, b;                 
         };
         
-        objects->resize( h.color );
+        objects->resize( max_color );
         std::vector<bounding_box_t> bbs;
-        bbs.resize( h.color );
-        for( int i = 0; i < h.color; ++i )
+        bbs.resize( max_color );
+        for( int i = 0; i < max_color; ++i )
         {
                 bounding_box_t & b = bbs[i];
                 b.l = b.t = INT_MAX;
@@ -400,10 +407,10 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
         }
         //memset( &bbs[0], 0, sizeof(bounding_box_t) );
         
-        image_header_t & header = h.img_quantized->header;
+        image_header_t & header = img_quantized->header;
         for( int y = 0; y < header.height; ++y )
         {
-                uint16_t * row = h.img_quantized->row<uint16_t>(y);
+                uint16_t * row = img_quantized->row<uint16_t>(y);
                 for( int x = 0; x < header.width; ++x )
                 {
                         uint16_t c = row[x]; 
@@ -432,7 +439,7 @@ waterched_create_objects( std::vector< watershed_object_t > * objects, helper_t 
                 
                 for( int y = b.t; y <= b.b; ++y )
                 {
-                        uint16_t * row = h.img_quantized->row<uint16_t>(y);
+                        uint16_t * row = img_quantized->row<uint16_t>(y);
                         for( int x = b.l; x <= b.r; ++x )
                         {
                                 int x_local = x - b.l;
@@ -473,16 +480,16 @@ static cmn::color4b_t gColors[gNumColors] =
         {0,     0,      0,      255}
 };
 
-static void 
-waterched_color( cmn::image_pt * colored, helper_t & h )
+void 
+watershed_color( cmn::image_pt * colored, cmn::image_pt img_quantized )
 {
-        image_header_t & src_header = h.img_quantized->header;
+        image_header_t & src_header = img_quantized->header;
         *colored = cmn::image_create( src_header.width, src_header.height, cmn::pitch_default, cmn::format_rgba );
         image_header_t & dst_header = (*colored)->header;
         
         for( int y = 0; y < src_header.height; ++y )
         {
-                uint16_t * src_row = (uint16_t *)(h.img_quantized->bytes + y * src_header.pitch);
+                uint16_t * src_row = (uint16_t *)(img_quantized->bytes + y * src_header.pitch);
                 cmn::color4b_t * dst_row = (cmn::color4b_t *)((*colored)->bytes + y * dst_header.pitch);
                 for( int x = 0; x < src_header.width; ++x )
                 {
@@ -518,10 +525,10 @@ watershed( std::vector< watershed_object_t > * objects, cmn::image_pt * colored,
         //watershed_outer( h ); 
         
         if( objects )
-                waterched_create_objects( objects, h );
+                watershed_create_objects( objects, h.color, h.img_quantized );
         
         if(colored)
-                waterched_color( colored, h );
+                watershed_color( colored, h.img_quantized );
 }
 
 
@@ -562,6 +569,27 @@ void watershed_objects_save_to_png( std::vector< watershed_object_t > const & ob
         }
 }
 
+void watershed_test()
+{
+        std::string dir_src = adapter::fs_resource_dir() + "pictures/faces_png/";
+        std::string dir_dst = adapter::fs_prefs_dir();
+        std::string dir_objects = dir_dst + "objects/";                
+        adapter::fs_make_dir( dir_objects );                
+        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "c.png").c_str() );        
+        std::vector< alg::watershed_object_t > wo;
+        cmn::image_pt img_watershed;
+        alg::watershed2( &wo, &img_watershed, img );
+        
+        adapter::image_save_to_png( img_watershed, (dir_dst + "a_colored.png").c_str() );
+        printf("found %d objects\n", (int)wo.size());
+    
+        alg::watershed_objects_save_to_png( wo, dir_objects );
+        
+        cmn::plotcirc_pt pc = cmn::plotcirc_create( wo[3].img, wo[3].wc );        
+        pc->name = cmn::name_create("face");
+        pc->name_sub = 0;
+        adapter::plotcirc_save_to_png( pc, (dir_objects + "face.png").c_str() );
+}
 
 
 } //alg
