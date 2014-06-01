@@ -3,13 +3,14 @@
 #include <cmn/rect.hpp>
 #include <cmn/log.hpp>
 #include <cmn/utils.hpp>
+#include <alg/sobel.hpp>
 
 #include <algorithm>
 #include <string.h>
 
-static const int16_t c_grad_tolerance_find = -1;
+static const int16_t c_grad_tolerance_find = 0;
 static const int16_t c_grad_tolerance_flood = 0;
-static const int16_t c_grad_sharp_border = 20;          //it's definitely an another object!
+static const int16_t c_grad_sharp_border = 20;          //it's definitely another object!
 
 namespace alg 
 {
@@ -144,7 +145,8 @@ find_lowlands( helper_t & h )
                         ll_examine_neighbors( h, img_color, img_src, x, y );
                 }
         } 
-        
+
+#if 0        
         int n = 0;
         auto inc_range = [&n](){ return n++; };
         h.lowlands_by_deepness.resize( h.lowlands.size() );
@@ -158,6 +160,7 @@ find_lowlands( helper_t & h )
                                 
         //sort them all
         std::sort( h.lowlands_by_deepness.begin(), h.lowlands_by_deepness.end(), sort_by_deepness );
+#endif        
 }
 
 static void
@@ -285,7 +288,7 @@ void watershed2( std::vector< watershed_object_t > * objects, cmn::image_pt * co
         h.color = 0;
         
         find_lowlands(h);
-        flood2(h);
+        flood(h);
 
         if( objects )
                 watershed_create_objects( objects, h.color, h.img_color );

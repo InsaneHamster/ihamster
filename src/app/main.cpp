@@ -1,6 +1,8 @@
 #include <core/frame_recognizer.hpp>
 #include <alg/watershed.hpp>
 #include <alg/plotcirc_db.hpp>
+#include <alg/sobel.hpp>
+
 #include <cmn/plotcirc.hpp>
 
 #include <adapter/image.hpp>
@@ -83,7 +85,8 @@ int main( int argc, char const * argv[] )
 #if 1
 int main()
 {
-        alg::watershed_test();
+        //alg::watershed_test();
+        alg::sobel_test();
         
         return 0;
 }

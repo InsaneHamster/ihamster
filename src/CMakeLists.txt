@@ -19,9 +19,9 @@ set(IHAMSTER_CPP_FILES
 	adapter/plotcirc.cpp
 	adapter/sqlite.cpp
 	alg/plotcirc_db.cpp
+	alg/sobel.cpp
 	alg/watershed.cpp
-	alg/watershed2.cpp
-	alg/watershed3.cpp	
+	alg/watershed2.cpp	
 	app/main.cpp
 	cmn/log.cpp
 	cmn/image.cpp
