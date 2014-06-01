@@ -39,11 +39,11 @@ static int const maskb[3][3]
         {-3*29,     0,      3*29},        
 };
 
-int max_grad = 0;
 
 void
-sobel( cmn::image_pt * img_edge, cmn::image_pt const img_src )
+sobel( cmn::image_pt * img_edge, int * max_grad, cmn::image_pt const img_src )
 {
+        int max_gradi = 0;
         int const width = img_src->header.width;
         int const height = img_src->header.height;        
                 
@@ -119,8 +119,8 @@ sobel( cmn::image_pt * img_edge, cmn::image_pt const img_src )
                         int const grad = (int)sqrt(gradxr*gradxr + gradyr*gradyr + gradxg*gradxg + gradyg*gradyg + gradxb*gradxb + gradyb*gradyb);
                         row_dst[x] = (uint8_t)grad;             
                         
-                        if( grad > max_grad )
-                                max_grad = grad;
+                        if( grad > max_gradi )
+                                max_gradi = grad;
                 }
         }
 
@@ -147,6 +147,7 @@ sobel( cmn::image_pt * img_edge, cmn::image_pt const img_src )
         }
         
         *img_edge = img_dstp;
+        if( max_grad ) *max_grad = max_gradi;
 }
 
 void sobel_test()
@@ -155,10 +156,11 @@ void sobel_test()
         std::string dir_dst = adapter::fs_prefs_dir();
         std::string dir_objects = dir_dst + "objects/";                
         adapter::fs_make_dir( dir_objects );                
-        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "a.png").c_str() );        
+        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "226278.png").c_str() );        
         
         cmn::image_pt img_sobel;
-        sobel(&img_sobel, img);
+        int max_grad;
+        sobel(&img_sobel, &max_grad, img);
         cmn::image_pt img_sobel_color = cmn::image_rgba_from_g8(img_sobel);
         
         printf("max_grad: %d\n", max_grad);
