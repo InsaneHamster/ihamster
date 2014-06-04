@@ -44,7 +44,7 @@ image_pt image_bw_from_g8( image_pt const & gray, uint8_t const border )
                 for( int x = 0; x < width; ++x )
                 {
                         bool value = row_src[x] > border;
-                        image_bw_writepixel( row_dst, x, border );
+                        image_bw_writepixel( row_dst, x, value );
                 }
         }
         

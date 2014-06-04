@@ -7,6 +7,8 @@
 //for tests
 #include <adapter/image.hpp>
 #include <adapter/filesystem.hpp>
+#include <alg/paint.hpp>
+#include <alg/seg_object.hpp>
 
 namespace alg 
 {
@@ -156,16 +158,21 @@ void sobel_test()
         std::string dir_dst = adapter::fs_prefs_dir();
         std::string dir_objects = dir_dst + "objects/";                
         adapter::fs_make_dir( dir_objects );                
-        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "226278.png").c_str() );        
+        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "c.png").c_str() );        
         
         cmn::image_pt img_sobel;
         int max_grad;
         sobel(&img_sobel, &max_grad, img);
-        cmn::image_pt img_sobel_color = cmn::image_rgba_from_g8(img_sobel);
-        
-        printf("max_grad: %d\n", max_grad);
-                
+        cmn::image_pt img_sobel_color = cmn::image_rgba_from_g8(img_sobel);        
+        printf("max_grad: %d\n", max_grad);                
         adapter::image_save_to_png( img_sobel_color, (dir_dst + "a_sobel.png").c_str() );
+        
+        cmn::image_pt img_bw = cmn::image_bw_from_g8(img_sobel, max_grad/5);
+        cmn::image_pt img_colored_g16 = alg::image_paint(img_bw);
+        cmn::image_pt img_colored_rgba = alg::seg_color(img_colored_g16);
+        
+        adapter::image_save_to_png( img_colored_rgba, (dir_dst + "a_sobel_colored.png").c_str() );
+        
 }
 
 }

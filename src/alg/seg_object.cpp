@@ -105,25 +105,26 @@ static cmn::color4b_t gColors[gNumColors] =
 };
 
 
-void 
-seg_color( cmn::image_pt * colored, cmn::image_pt img_quantized )
+cmn::image_pt
+seg_color( cmn::image_pt img_quantized )
 {
         image_header_t & src_header = img_quantized->header;
-        *colored = cmn::image_create( src_header.width, src_header.height, cmn::pitch_default, cmn::format_rgba );
-        image_header_t & dst_header = (*colored)->header;
+        image_pt colored = cmn::image_create( src_header.width, src_header.height, cmn::pitch_default, cmn::format_rgba );
+        image_header_t & dst_header = colored->header;
         
         for( int y = 0; y < src_header.height; ++y )
         {
-                uint16_t * src_row = (uint16_t *)(img_quantized->bytes + y * src_header.pitch);
-                cmn::color4b_t * dst_row = (cmn::color4b_t *)((*colored)->bytes + y * dst_header.pitch);
+                uint16_t * const src_row = (uint16_t *)(img_quantized->bytes + y * src_header.pitch);
+                cmn::color4b_t * const dst_row = colored->row<cmn::color4b_t>(y);
                 for( int x = 0; x < src_header.width; ++x )
                 {
                         uint16_t src_px = src_row[x];
                         int src_idx = src_px & 15;      //15 == gNumColors-1
-                        cmn::color4b_t * dst_px = dst_row+x;
+                        cmn::color4b_t * dst_px = dst_row + x;
                         *dst_px = gColors[src_idx];                                                                       
                 }
         }
+        return colored;
 }
 
         

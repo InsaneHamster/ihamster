@@ -22,7 +22,7 @@ namespace alg
         void seg_create_objects( std::vector< seg_object_t > * objects, uint16_t max_color, cmn::image_pt img_quantized );
 
         //on output - RGBA image with acid colors
-        void seg_color( cmn::image_pt * colored, cmn::image_pt img_quantized );
+        cmn::image_pt seg_color( cmn::image_pt img_quantized );
 
         
         

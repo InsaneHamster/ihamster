@@ -305,7 +305,7 @@ void watershed( std::vector< seg_object_t > * objects, cmn::image_pt * colored, 
                 seg_create_objects( objects, h.color, h.img_color );
         
         if( colored )
-                seg_color( colored, h.img_color );        
+                *colored = seg_color( h.img_color );
 }
 
 

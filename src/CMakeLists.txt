@@ -18,6 +18,7 @@ set(IHAMSTER_CPP_FILES
 	adapter/image.cpp
 	adapter/plotcirc.cpp
 	adapter/sqlite.cpp
+	alg/paint.cpp
 	alg/plotcirc_db.cpp
 	alg/seg_object.cpp
 	alg/sobel.cpp	
