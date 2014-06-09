@@ -325,10 +325,12 @@ void watershed_test()
     
         alg::seg_objects_save_to_png( wo, dir_objects );
         
+#if 0        
         cmn::plotcirc_pt pc = cmn::plotcirc_create( wo[3].img, wo[3].wc );        
         pc->name = cmn::name_create("face");
         pc->name_sub = 0;
         adapter::plotcirc_save_to_png( pc, (dir_objects + "face.png").c_str() );
+#endif
 }
 
 

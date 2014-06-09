@@ -71,6 +71,16 @@ std::string fs_reverse_cdr( std::string const & path, delimiter_add_et da )
         return path.substr( 0, found_pos + (size_t)da );
 }
 
+std::pair<std::string, std::string> 
+fs_name_ext( std::string const & filename )
+{
+        std::size_t pos = filename.find_last_of('.');
+        if( pos == std::string::npos )        
+                return std::pair<std::string, std::string>(filename, std::string());
+        else
+                return std::make_pair( filename.substr(0, pos), filename.substr( pos+1 ) );
+}
+
 void fs_make_dir(std::string const & path)
 {
         int ret = mkdir( path.c_str(), 0777 ); 

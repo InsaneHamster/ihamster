@@ -1,14 +1,17 @@
 #include <alg/sobel.hpp>
 #include <cmn/image.hpp>
 #include <cmn/image_utils.hpp>
+#include <cmn/log.hpp>
 #include <cmn/point.hpp>
 #include <math.h>
+#include <string.h>
 
 //for tests
 #include <adapter/image.hpp>
 #include <adapter/filesystem.hpp>
 #include <alg/paint.hpp>
 #include <alg/seg_object.hpp>
+//#include <alg/diagram.hpp>
 
 namespace alg 
 {
@@ -22,33 +25,64 @@ static int const mask[3][3]
 };
 #endif
 
-static int const maskr[3][3]
+struct rgb_mask_t
 {
-        {-3*76,     0,      3*76},
-        {-10*76,    0,      10*76},
-        {-3*76,     0,      3*76},        
+        static int const constexpr maskr[3][3] =
+        {
+                {-3*76,     0,      3*76},
+                {-10*76,    0,      10*76},
+                {-3*76,     0,      3*76},        
+        };
+        static int const constexpr maskg[3][3] =
+        {
+                {-3*150,     0,      3*150},
+                {-10*150,    0,      10*150},
+                {-3*150,     0,      3*150},        
+        };
+        static int const constexpr maskb[3][3] =
+        {
+                {-3*29,     0,      3*29},
+                {-10*29,    0,      10*29},
+                {-3*29,     0,      3*29},        
+        };
 };
-static int const maskg[3][3]
+
+struct hsv_mask_t
 {
-        {-3*150,     0,      3*150},
-        {-10*150,    0,      10*150},
-        {-3*150,     0,      3*150},        
-};
-static int const maskb[3][3]
-{
-        {-3*29,     0,      3*29},
-        {-10*29,    0,      10*29},
-        {-3*29,     0,      3*29},        
+
+        static int const constexpr maskr[3][3] =
+        {
+                {-3*20,     0,      3*20},
+                {-10*20,    0,      10*20},
+                {-3*20,     0,      3*20},        
+        };
+        static int const constexpr maskg[3][3] =
+        {
+                {-3*110,     0,      3*110},
+                {-10*110,    0,      10*110},
+                {-3*110,     0,      3*110},        
+        };
+        static int const constexpr maskb[3][3] =
+        {
+                {-3*110,     0,      3*110},
+                {-10*110,    0,      10*110},
+                {-3*110,     0,      3*110},        
+        };
+
 };
 
 
-void
-sobel( cmn::image_pt * img_edge, int * max_grad, cmn::image_pt const img_src )
-{
+template< typename M >          //M stands for Mask, see above 
+static void
+sobel_template( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt const img_src )
+{        
         int max_gradi = 0;
+        int * const diagram = stat->diagram;
+        memset( diagram, 0, 256*sizeof(int) );
+        
         int const width = img_src->header.width;
         int const height = img_src->header.height;        
-                
+                 
         if( width < 3  || height < 3 )                        
                 return;
                 
@@ -61,9 +95,7 @@ sobel( cmn::image_pt * img_edge, int * max_grad, cmn::image_pt const img_src )
         cmn::color4b_t const * row[3];        
         row[1] = img_src->row<cmn::color4b_t>(0);
         row[2] = img_src->row<cmn::color4b_t>(1);
-        
-        
-        
+                        
         for( int y = 1; y < lasty; ++y )
         {
                 row[0] = row[1];
@@ -88,19 +120,19 @@ sobel( cmn::image_pt * img_edge, int * max_grad, cmn::image_pt const img_src )
                         c_t const row21 = row[2][x];
                         c_t const row22 = row[2][x2];
                                                 
-                        int const gx00r = maskr[0][0]*row00.r; int const gx00g = maskg[0][0]*row00.g; int const gx00b = maskb[0][0]*row00.b;
-                        int const gx02r = maskr[0][2]*row02.r; int const gx02g = maskg[0][2]*row02.g; int const gx02b = maskb[0][2]*row02.b;
-                        int const gx10r = maskr[1][0]*row10.r; int const gx10g = maskg[1][0]*row10.g; int const gx10b = maskb[1][0]*row10.b;
-                        int const gx12r = maskr[1][2]*row12.r; int const gx12g = maskg[1][2]*row12.g; int const gx12b = maskb[1][2]*row12.b;
-                        int const gx20r = maskr[2][0]*row20.r; int const gx20g = maskg[2][0]*row20.g; int const gx20b = maskb[2][0]*row20.b;
-                        int const gx22r = maskr[2][2]*row22.r; int const gx22g = maskg[2][2]*row22.g; int const gx22b = maskb[2][2]*row22.b;
+                        int const gx00r = M::maskr[0][0]*row00.r; int const gx00g = M::maskg[0][0]*row00.g; int const gx00b = M::maskb[0][0]*row00.b;
+                        int const gx02r = M::maskr[0][2]*row02.r; int const gx02g = M::maskg[0][2]*row02.g; int const gx02b = M::maskb[0][2]*row02.b;
+                        int const gx10r = M::maskr[1][0]*row10.r; int const gx10g = M::maskg[1][0]*row10.g; int const gx10b = M::maskb[1][0]*row10.b;
+                        int const gx12r = M::maskr[1][2]*row12.r; int const gx12g = M::maskg[1][2]*row12.g; int const gx12b = M::maskb[1][2]*row12.b;
+                        int const gx20r = M::maskr[2][0]*row20.r; int const gx20g = M::maskg[2][0]*row20.g; int const gx20b = M::maskb[2][0]*row20.b;
+                        int const gx22r = M::maskr[2][2]*row22.r; int const gx22g = M::maskg[2][2]*row22.g; int const gx22b = M::maskb[2][2]*row22.b;
 
-                        int const gy00r = maskr[0][0]*row00.r; int const gy00g = maskg[0][0]*row00.g; int const gy00b = maskb[0][0]*row00.b;
-                        int const gy01r = maskr[1][0]*row01.r; int const gy01g = maskg[1][0]*row01.g; int const gy01b = maskb[1][0]*row01.b;
-                        int const gy02r = maskr[2][0]*row02.r; int const gy02g = maskg[2][0]*row02.g; int const gy02b = maskb[2][0]*row02.b;
-                        int const gy20r = maskr[0][2]*row20.r; int const gy20g = maskg[0][2]*row20.g; int const gy20b = maskb[0][2]*row20.b;
-                        int const gy21r = maskr[1][2]*row21.r; int const gy21g = maskg[1][2]*row21.g; int const gy21b = maskb[1][2]*row21.b;
-                        int const gy22r = maskr[2][2]*row22.r; int const gy22g = maskg[2][2]*row22.g; int const gy22b = maskb[2][2]*row22.b;
+                        int const gy00r = M::maskr[0][0]*row00.r; int const gy00g = M::maskg[0][0]*row00.g; int const gy00b = M::maskb[0][0]*row00.b;
+                        int const gy01r = M::maskr[1][0]*row01.r; int const gy01g = M::maskg[1][0]*row01.g; int const gy01b = M::maskb[1][0]*row01.b;
+                        int const gy02r = M::maskr[2][0]*row02.r; int const gy02g = M::maskg[2][0]*row02.g; int const gy02b = M::maskb[2][0]*row02.b;
+                        int const gy20r = M::maskr[0][2]*row20.r; int const gy20g = M::maskg[0][2]*row20.g; int const gy20b = M::maskb[0][2]*row20.b;
+                        int const gy21r = M::maskr[1][2]*row21.r; int const gy21g = M::maskg[1][2]*row21.g; int const gy21b = M::maskb[1][2]*row21.b;
+                        int const gy22r = M::maskr[2][2]*row22.r; int const gy22g = M::maskg[2][2]*row22.g; int const gy22b = M::maskb[2][2]*row22.b;
 
                         int const sumx0r = gx00r + gx02r; int const sumx0g = gx00g + gx02g; int const sumx0b = gx00b + gx02b;
                         int const sumx1r = gx10r + gx12r; int const sumx1g = gx10g + gx12g; int const sumx1b = gx10b + gx12b;  
@@ -120,6 +152,7 @@ sobel( cmn::image_pt * img_edge, int * max_grad, cmn::image_pt const img_src )
                         //now calculate distance... invent something, definitely will be the slowest point
                         int const grad = (int)sqrt(gradxr*gradxr + gradyr*gradyr + gradxg*gradxg + gradyg*gradyg + gradxb*gradxb + gradyb*gradyb);
                         row_dst[x] = (uint8_t)grad;             
+                        ++diagram[ (uint8_t)grad ];
                         
                         if( grad > max_gradi )
                                 max_gradi = grad;
@@ -149,7 +182,124 @@ sobel( cmn::image_pt * img_edge, int * max_grad, cmn::image_pt const img_src )
         }
         
         *img_edge = img_dstp;
-        if( max_grad ) *max_grad = max_gradi;
+        stat->max_grad = max_gradi;
+}
+
+void sobel( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt const img_src )
+{
+        switch( img_src->header.format )
+        {
+                case cmn::format_rgba:
+                        sobel_template<rgb_mask_t>( img_edge, stat, img_src );
+                        break;
+                case cmn::format_hsva:
+                        sobel_template<hsv_mask_t>( img_edge, stat, img_src );
+                        break;
+                default:
+                        cmn::log_and_throw("alg/sobel.cpp:sobel - format %d is not supported", img_src->header.format );
+        }
+}
+
+#if 0   //works but results are not better than with sobel 3x3
+
+static int mask_f = 1;
+
+//I tried severel different masks... anyway it doesn't become better :(
+//sum 30
+static int const maskg[5][5] =
+{
+        {2,      1,      0,      -1,     -2},
+        {4,      2,      0,      -2,     -4},
+        {8,      4,      0,      -4,     -8},
+        {4,      2,      0,      -2,     -4},
+        {2,      1,      0,      -1,     -2},
+};
+
+static void sobel5( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt const img_src )
+{
+        int max_gradi = 0;
+        int * const diagram = stat->diagram;
+        memset( diagram, 0, 256*sizeof(int) );
+        
+        int const width = img_src->header.width;
+        int const height = img_src->header.height;        
+                 
+        if( width < 5  || height < 5 )
+                return;
+                
+        cmn::image_pt img_dstp = cmn::image_create( width, height, cmn::pitch_default, cmn::format_g );
+        cmn::image_t * img_dst = img_dstp.get();
+        
+        int const lastx = width - 2;
+        int const lasty = height - 2;
+        
+        cmn::color4b_t const * row[5];        
+        row[1] = img_src->row<cmn::color4b_t>(0);
+        row[2] = img_src->row<cmn::color4b_t>(1);
+        row[3] = img_src->row<cmn::color4b_t>(2);
+        row[4] = img_src->row<cmn::color4b_t>(3);        
+                        
+        for( int y = 2; y < lasty; ++y )
+        {
+                //shifting...
+                row[0] = row[1];
+                row[1] = row[2];
+                row[2] = row[3];
+                row[3] = row[4];
+                row[4] = img_src->row<cmn::color4b_t>(y+2);                
+        
+                uint8_t * row_dst = img_dst->row<uint8_t>(y);
+                
+                for( int x = 2; x < lastx; ++x )
+                {
+                        int sumx = 0, sumy = 0;
+                        for( int8_t my = 0; my < 5; ++my )
+                        {                        
+                                for( int8_t mx = 0; mx < 5; ++mx )
+                                {
+                                    sumx += row[my][x + mx-2].g*maskg[my][mx];
+                                    sumy += row[my][x + mx-2].g*maskg[mx][my];                                    
+                                }
+                        }
+                        
+                        int grad = (int)(sqrt( sumx*sumx + sumy*sumy ));
+                        grad = grad / 30;
+                        row_dst[x] = grad;
+                        
+                        if( grad > max_gradi )
+                                max_gradi = grad;
+                }
+        }
+        
+        stat->max_grad = max_gradi;
+        *img_edge = img_dstp;
+}
+#endif
+
+
+static void sobel_test_do_rest( cmn::image_pt const & img, std::string const & name_base )
+{
+        std::string dir_dst = adapter::fs_prefs_dir();
+        cmn::image_pt img_sobel;
+        sobel_stat_t stat;        
+        
+        sobel(&img_sobel, &stat, img);                
+      
+        cmn::image_pt img_sobel_color = cmn::image_rgba_from_g8(img_sobel);        
+        printf("%s: max_grad: %d\n", name_base.c_str(), stat.max_grad);                
+        if( stat.max_grad > 255 ) stat.max_grad = 255;        
+        
+        adapter::image_save_to_png( img_sobel_color, (dir_dst + name_base +"_sobel.png").c_str() );
+        
+        //alg::diagram_make_integral( stat.diagram, stat.max_grad );
+        //uint8_t cutting_point = alg::diagram_find_cutting_point( stat.diagram, stat.max_grad );
+        
+        cmn::image_pt img_bw = cmn::image_bw_from_g8(img_sobel, 10);
+        cmn::image_pt img_colored_g16 = alg::image_paint(img_bw);
+        cmn::image_pt img_colored_rgba = alg::seg_color(img_colored_g16);
+        
+        adapter::image_save_to_png( img_colored_rgba, (dir_dst + name_base +"_sobel_colored.png").c_str() );
+
 }
 
 void sobel_test()
@@ -158,21 +308,22 @@ void sobel_test()
         std::string dir_dst = adapter::fs_prefs_dir();
         std::string dir_objects = dir_dst + "objects/";                
         adapter::fs_make_dir( dir_objects );                
-        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "c.png").c_str() );        
+
+        std::vector<adapter::fs_file_info_t> files;
+        adapter::fs_dir_contents( &files, dir_src );
         
-        cmn::image_pt img_sobel;
-        int max_grad;
-        sobel(&img_sobel, &max_grad, img);
-        cmn::image_pt img_sobel_color = cmn::image_rgba_from_g8(img_sobel);        
-        printf("max_grad: %d\n", max_grad);                
-        adapter::image_save_to_png( img_sobel_color, (dir_dst + "a_sobel.png").c_str() );
-        
-        cmn::image_pt img_bw = cmn::image_bw_from_g8(img_sobel, max_grad/5);
-        cmn::image_pt img_colored_g16 = alg::image_paint(img_bw);
-        cmn::image_pt img_colored_rgba = alg::seg_color(img_colored_g16);
-        
-        adapter::image_save_to_png( img_colored_rgba, (dir_dst + "a_sobel_colored.png").c_str() );
-        
+        for( size_t i = 0; i < files.size(); ++i )
+        {        
+                adapter::fs_file_info_t const & fi = files[i];
+                
+                cmn::image_pt img = adapter::image_create_from_png( (dir_src + fi.name).c_str() );        
+                //cmn::image_pt img_hsv = cmn::image_hsva_from_rgba( img );
+                
+                std::string base_name = "objects/" + adapter::fs_name_ext( fi.name ).first;
+                
+                sobel_test_do_rest(img, base_name);
+                //sobel_test_do_rest(img_hsv, base_name+"_hsv");   
+        }
 }
 
 }

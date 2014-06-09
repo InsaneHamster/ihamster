@@ -86,7 +86,7 @@ seg_create_objects( std::vector< seg_object_t > * objects, uint16_t max_color, c
 static int const gNumColors = 16;
 static cmn::color4b_t gColors[gNumColors] =
 {
-        {255,   0,      0,      255},
+        {255,   0,      20,     255},           //to distinguish it from "pure red"
         {0,     255,    0,      255},
         {0,     0,      255,    255},
         {255,   255,    0,      255},

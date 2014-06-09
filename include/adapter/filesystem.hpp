@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <memory>
 #include <vector>
+#include <utility>
 
 namespace adapter 
 {
@@ -37,6 +38,11 @@ namespace adapter
         //get first/dir component of a path, that is /usr/lib/libslite3.so will return /usr/lib
         std::string fs_reverse_cdr( std::string const & path , delimiter_add_et da = delimiter_add);           
                 
+        //returns name and extension. name is everything before exension.
+        //in case there is no extension second string is empty
+        //don't pass full paths here to avoid cases like my.dir/my_file
+        std::pair<std::string, std::string> fs_name_ext( std::string const & filename );
+        
         //won't create subfolders, throws if error
         void fs_make_dir(std::string const & path);
         

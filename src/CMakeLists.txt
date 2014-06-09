@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 
 SET( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}" )
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fsanitize=address" )
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ") #-fsanitize=address" )
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -ggdb" )
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ") #-fsanitize=address")
 
 find_package(PNG REQUIRED)
 
@@ -18,6 +18,7 @@ set(IHAMSTER_CPP_FILES
 	adapter/image.cpp
 	adapter/plotcirc.cpp
 	adapter/sqlite.cpp
+	alg/diagram.cpp
 	alg/paint.cpp
 	alg/plotcirc_db.cpp
 	alg/seg_object.cpp
