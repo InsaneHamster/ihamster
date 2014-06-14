@@ -50,7 +50,7 @@ namespace adapter
         std::string fs_prefs_dir(delimiter_add_et da = delimiter_add);  //on linux ~/.ihamser
         
         
-        enum fs_file_type_e
+        enum fs_file_type_et
         {
                 fs_file_type_file,
                 fs_file_type_dir
@@ -59,7 +59,7 @@ namespace adapter
         struct fs_file_info_t
         {
                 std::string     name;
-                fs_file_type_e  type;
+                fs_file_type_et type;
         };
         
         //read contents of a directory. non-recursive, all in a time, skips hidden/special files

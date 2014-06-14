@@ -233,9 +233,9 @@ void plotcirc_db_export_to_sqlite( cmn::plotcirc_db_pt const & pcd, std::string 
                                                 
                 for( int y = 0; y < cmn::plotcirc_discr; ++y )
                 {
-                        *(int32_t*)&buf[write_pos] = pc->rows[y].size();
+                        *(int32_t*)&buf[write_pos] = (int)pc->rows[y].size();
                         write_pos += sizeof(int32_t);
-                        int32_t size = pc->rows[y].size() * sizeof(cmn::point2f_t);
+                        size_t size = pc->rows[y].size() * sizeof(cmn::point2f_t);
                         if( !pc->rows[y].empty() )
                                 memcpy( &buf[write_pos], &pc->rows[y][0], size );
                         write_pos += size;
