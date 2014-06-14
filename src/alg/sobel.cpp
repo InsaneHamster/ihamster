@@ -13,6 +13,8 @@
 #include <alg/seg_object.hpp>
 //#include <alg/diagram.hpp>
 
+extern cmn::color3f_t max_lab;
+
 namespace alg 
 {
 
@@ -49,7 +51,6 @@ struct rgb_mask_t
 
 struct hsv_mask_t
 {
-
         static int const constexpr maskr[3][3] =
         {
                 {-3*20,     0,      3*20},
@@ -70,6 +71,17 @@ struct hsv_mask_t
         };
 
 };
+
+struct lab_mask_t
+{
+        static float const constexpr mask[3][3] =
+        {
+                {-3,     0,      3},
+                {-10,    0,      10},
+                {-3,     0,      3},        
+        };
+};
+
 
 
 template< typename M >          //M stands for Mask, see above 
@@ -148,7 +160,7 @@ sobel_template( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt con
                         //Normalize: YUV (8bits) + 4Bits for Scharr
                         int const gradxr = sumxr >> (4+8); int const gradxg = sumxg >> (4+8); int const gradxb = sumxb >> (4+8);        
                         int const gradyr = sumyr >> (4+8); int const gradyg = sumyg >> (4+8); int const gradyb = sumyb >> (4+8);    
-                        
+                                                                        
                         //now calculate distance... invent something, definitely will be the slowest point
                         int const grad = (int)sqrt(gradxr*gradxr + gradyr*gradyr + gradxg*gradxg + gradyg*gradyg + gradxb*gradxb + gradyb*gradyb);
                         row_dst[x] = (uint8_t)grad;             
@@ -185,6 +197,123 @@ sobel_template( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt con
         stat->max_grad = max_gradi;
 }
 
+template<typename M>    //M here - lab mask...
+void sobel_lab(cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt const img_src)
+{
+        int max_gradi = 0;
+        int * const diagram = stat->diagram;
+        memset( diagram, 0, 256*sizeof(int) );
+        
+        int const width = img_src->header.width;
+        int const height = img_src->header.height;        
+                 
+        if( width < 3  || height < 3 )                        
+                return;
+                
+        cmn::image_pt img_dstp = cmn::image_create( width, height, cmn::pitch_default, cmn::format_g );
+        cmn::image_t * img_dst = img_dstp.get();
+        
+        int const lastx = width - 1;
+        int const lasty = height - 1;
+        
+        cmn::color3f_t const * row[3];        
+        row[1] = img_src->row<cmn::color3f_t>(0);
+        row[2] = img_src->row<cmn::color3f_t>(1);
+                        
+        for( int y = 1; y < lasty; ++y )
+        {
+                row[0] = row[1];
+                row[1] = row[2];
+                row[2] = img_src->row<cmn::color3f_t>(y+1);                
+        
+                uint8_t * row_dst = img_dst->row<uint8_t>(y);
+                
+                for( int x = 1; x < lastx; ++x )
+                {
+                        //compiler optimization heaven...
+                        int const x0 = x-1;
+                        int const x2 = x+1;
+                        
+                        typedef cmn::color3f_t c_t;
+                        c_t const row00 = row[0][x0];
+                        c_t const row01 = row[0][x];
+                        c_t const row02 = row[0][x2];
+                        c_t const row10 = row[1][x0];
+                        c_t const row12 = row[1][x2];
+                        c_t const row20 = row[2][x0];
+                        c_t const row21 = row[2][x];
+                        c_t const row22 = row[2][x2];
+                                                
+                        float const gx00r = M::mask[0][0]*row00.r; float const gx00g = M::mask[0][0]*row00.g; float const gx00b = M::mask[0][0]*row00.b;
+                        float const gx02r = M::mask[0][2]*row02.r; float const gx02g = M::mask[0][2]*row02.g; float const gx02b = M::mask[0][2]*row02.b;
+                        float const gx10r = M::mask[1][0]*row10.r; float const gx10g = M::mask[1][0]*row10.g; float const gx10b = M::mask[1][0]*row10.b;
+                        float const gx12r = M::mask[1][2]*row12.r; float const gx12g = M::mask[1][2]*row12.g; float const gx12b = M::mask[1][2]*row12.b;
+                        float const gx20r = M::mask[2][0]*row20.r; float const gx20g = M::mask[2][0]*row20.g; float const gx20b = M::mask[2][0]*row20.b;
+                        float const gx22r = M::mask[2][2]*row22.r; float const gx22g = M::mask[2][2]*row22.g; float const gx22b = M::mask[2][2]*row22.b;
+
+                        float const gy00r = M::mask[0][0]*row00.r; float const gy00g = M::mask[0][0]*row00.g; float const gy00b = M::mask[0][0]*row00.b;
+                        float const gy01r = M::mask[1][0]*row01.r; float const gy01g = M::mask[1][0]*row01.g; float const gy01b = M::mask[1][0]*row01.b;
+                        float const gy02r = M::mask[2][0]*row02.r; float const gy02g = M::mask[2][0]*row02.g; float const gy02b = M::mask[2][0]*row02.b;
+                        float const gy20r = M::mask[0][2]*row20.r; float const gy20g = M::mask[0][2]*row20.g; float const gy20b = M::mask[0][2]*row20.b;
+                        float const gy21r = M::mask[1][2]*row21.r; float const gy21g = M::mask[1][2]*row21.g; float const gy21b = M::mask[1][2]*row21.b;
+                        float const gy22r = M::mask[2][2]*row22.r; float const gy22g = M::mask[2][2]*row22.g; float const gy22b = M::mask[2][2]*row22.b;
+
+                        float const sumx0r = gx00r + gx02r; float const sumx0g = gx00g + gx02g; float const sumx0b = gx00b + gx02b;
+                        float const sumx1r = gx10r + gx12r; float const sumx1g = gx10g + gx12g; float const sumx1b = gx10b + gx12b;  
+                        float const sumx2r = gx20r + gx22r; float const sumx2g = gx20g + gx22g; float const sumx2b = gx20b + gx22b;
+                        
+                        float const sumy0r = gy00r + gy01r; float const sumy0g = gy00g + gy01g; float const sumy0b = gy00b + gy01b;
+                        float const sumy1r = gy02r + gy20r; float const sumy1g = gy02g + gy20g; float const sumy1b = gy02b + gy20b;
+                        float const sumy2r = gy21r + gy22r; float const sumy2g = gy21g + gy22g; float const sumy2b = gy21b + gy22b;
+                        
+                        float const sumxr = sumx0r + sumx1r + sumx2r; float const sumxg = sumx0g + sumx1g + sumx2g; float const sumxb = sumx0b + sumx1b + sumx2b;
+                        float const sumyr = sumy0r + sumy1r + sumy2r; float const sumyg = sumy0g + sumy1g + sumy2g; float const sumyb = sumy0b + sumy1b + sumy2b;
+
+                        //normalize
+                        //16 should be here instead of 8, but practically I see that max Lab distance I have on images is about 100,
+                        //so I think scale x2 is fully ok
+                        float const gradxr = sumxr / 8.f; float const gradxg = sumxg / 8.f; float const gradxb = sumxb / 8.f;
+                        float const gradyr = sumyr / 8.f; float const gradyg = sumyg / 8.f; float const gradyb = sumyb / 8.f;
+                        
+                        //now calculate distance... invent something, definitely will be the slowest point
+                        int grad = (int)sqrt(gradxr*gradxr + gradyr*gradyr + gradxg*gradxg + gradyg*gradyg + gradxb*gradxb + gradyb*gradyb);
+                        
+                        if( grad > max_gradi )
+                                max_gradi = grad;
+                        
+                        if( grad > 255.f ) grad = 255.f;        //clamping
+                        row_dst[x] = (uint8_t)grad;             
+                        ++diagram[ (uint8_t)grad ];
+                        
+                }
+        }
+
+        {
+                uint8_t * row_dst0 = img_dst->row<uint8_t>(lasty-1);
+                uint8_t * row_dst1 = img_dst->row<uint8_t>(lasty);
+                
+                for( int x = 0; x <= lastx; ++x )        
+                        row_dst1[x] = row_dst0[x];
+
+                row_dst0 = img_src->row<uint8_t>(0);
+                row_dst1 = img_src->row<uint8_t>(1);
+                for( int x = 0; x <= lastx; ++x )        
+                        row_dst0[x] = row_dst1[x];
+
+                //vertical access:
+                int const prelastx = lastx - 1;
+                for( int y = 1; y < lasty; ++y )
+                {
+                        row_dst0 = img_src->row<uint8_t>(y);
+                        row_dst0[0] = row_dst0[1];
+                        row_dst0[lastx] = row_dst0[prelastx];
+                }
+        }
+        
+        *img_edge = img_dstp;
+        stat->max_grad = max_gradi;        
+}
+
 void sobel( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt const img_src )
 {
         switch( img_src->header.format )
@@ -194,6 +323,9 @@ void sobel( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt const i
                         break;
                 case cmn::format_hsva:
                         sobel_template<hsv_mask_t>( img_edge, stat, img_src );
+                        break;
+                case cmn::format_lab_f32:
+                        sobel_lab<lab_mask_t>( img_edge, stat, img_src );
                         break;
                 default:
                         cmn::log_and_throw("alg/sobel.cpp:sobel - format %d is not supported", img_src->header.format );
@@ -294,8 +426,8 @@ static void sobel_test_do_rest( cmn::image_pt const & img, std::string const & n
         //alg::diagram_make_integral( stat.diagram, stat.max_grad );
         //uint8_t cutting_point = alg::diagram_find_cutting_point( stat.diagram, stat.max_grad );
         
-        cmn::image_pt img_bw = cmn::image_bw_from_g8(img_sobel, 10);
-        cmn::image_pt img_colored_g16 = alg::image_paint(img_bw);
+        //cmn::image_pt img_bw = cmn::image_bw_from_g8(img_sobel, stat.max_grad/7);
+        cmn::image_pt img_colored_g16 = alg::image_paint_with_hint( img_sobel, img, 0.08f );
         cmn::image_pt img_colored_rgba = alg::seg_color(img_colored_g16);
         
         adapter::image_save_to_png( img_colored_rgba, (dir_dst + name_base +"_sobel_colored.png").c_str() );
@@ -312,18 +444,24 @@ void sobel_test()
         std::vector<adapter::fs_file_info_t> files;
         adapter::fs_dir_contents( &files, dir_src );
         
+        adapter::fs_file_info_t fi1;
+        fi1.name = "c.png";
+        //files.push_back(fi1);
+        
         for( size_t i = 0; i < files.size(); ++i )
         {        
                 adapter::fs_file_info_t const & fi = files[i];
                 
                 cmn::image_pt img = adapter::image_create_from_png( (dir_src + fi.name).c_str() );        
-                //cmn::image_pt img_hsv = cmn::image_hsva_from_rgba( img );
+                cmn::image_pt img_lab = cmn::image_lab_from_rgba( img );
                 
                 std::string base_name = "objects/" + adapter::fs_name_ext( fi.name ).first;
                 
-                sobel_test_do_rest(img, base_name);
-                //sobel_test_do_rest(img_hsv, base_name+"_hsv");   
+                //sobel_test_do_rest(img, base_name);
+                sobel_test_do_rest(img_lab, base_name+"_lab");   
         }
+        
+        printf("max_lab: %g,%g,%g\n", max_lab.r, max_lab.g, max_lab.b );
 }
 
 }

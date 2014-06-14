@@ -1,6 +1,10 @@
 #include <cmn/image_utils.hpp>
 #include <cmn/image.hpp>
 #include <cmn/point.hpp>
+#include <math.h>
+#include <float.h>
+
+cmn::color3f_t max_lab(FLT_MAX,FLT_MAX,FLT_MAX);
 
 namespace cmn
 {
@@ -146,6 +150,74 @@ image_pt image_rgba_from_hsva( image_pt const & img_srcp )
         
         return img_dstp;
 }
+
+static float convert_rgb_xyz( float const c )
+{
+        if( c <= 0.04045 )
+                return c/12.92f;
+        else
+                return powf( (c + 0.055f) / (1+0.055f), 2.4f );
+}
+
+static const float c_xyzlab_point = powf(6.f/29.f,3);
+static float convert_xyz_lab( float const c )
+{
+        float const cx = c;//3.f*c;
+        if(cx > c_xyzlab_point)        
+                return powf(cx, 1.f/3.f);
+        else
+                return 1.f/3.f*(29.f/6.f)*(29.f/6.f)*cx + 4.f/29.f;         
+}
+
+
+image_pt image_lab_from_rgba( image_pt const & img_srcp )
+{
+        image_t const * const img_src = img_srcp.get();
+        int const width = img_src->header.width;
+        int const height = img_src->header.height;
+        
+        image_pt img_dstp = cmn::image_create( width, height, pitch_default, format_lab_f32 );
+        image_t * const img_dst = img_dstp.get();
+        
+        for( int y = 0; y < height; ++y )
+        {
+                color4b_t const * const row_src = img_src->row<color4b_t>(y);
+                point3f_t * const row_dst = img_dst->row<point3f_t>(y);
+                
+                for( int x = 0; x < width; ++x )
+                {  
+                        color4b_t const cl_src = row_src[x];
+                        float const rf = cl_src.r / 255.f, gf = cl_src.g/255.f, bf=cl_src.b/255.f;
+                        float const rl = convert_rgb_xyz(rf);
+                        float const gl = convert_rgb_xyz(gf);
+                        float const bl = convert_rgb_xyz(bf);
+                        
+                        float const X = 0.4124f*rl + 0.3576f*gl + 0.1805f*bl;
+                        float const Y = 0.2126f*rl + 0.7152f*gl + 0.0722f*bl;
+                        float const Z = 0.0193f*rl + 0.1192f*gl + 0.9502f*bl;
+                        
+                        float const L = 116.f*convert_xyz_lab(Y)-16.f;
+                        float const a = 500.f*(convert_xyz_lab(X) - convert_xyz_lab(Y));
+                        float const b = 200.f*(convert_xyz_lab(Y) - convert_xyz_lab(Z));
+                        
+                        point3f_t & cd = row_dst[x];
+                        cd.x = L; cd.y = a; cd.z = b;                                                
+                        
+                        if( max_lab.r > L ) max_lab.r = L;
+                        if( max_lab.g > a ) max_lab.g = a;
+                        if( max_lab.b > b ) max_lab.b = b;
+                }
+        }
+        
+        return img_dstp;
+}
+
+image_pt image_rgba_from_lab( image_pt const & img_srcp )
+{
+        //implement me
+        return image_pt();
+}
+
 
 
 }

@@ -15,6 +15,7 @@ enum format_et : uint16_t
         format_gf,             //float (32)
         format_bw,             //black-white, monochromatic, 1 - white. bitmap. left to right, natural ordering. rows have to be at least 4 bytes aligned
         format_hsva,           //HSV/HSB, last byte - alpha from rgba or unused
+        format_lab_f32,        //CIE Lab, each component - 32bit float
         format_size            //has to be last one
 };
 

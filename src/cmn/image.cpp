@@ -7,7 +7,7 @@ namespace cmn
 
 static int format_bits[]
 {        
-        32, 8, 16, 32, 1, 32
+        32, 8, 16, 32, 1, 32, 32*3
 };
 static_assert( sizeof(format_bits)/sizeof(int) == format_size, "add value(s) to format_bits array" );
 
