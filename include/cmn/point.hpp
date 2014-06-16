@@ -79,6 +79,7 @@ struct point_tt<T, 3>
         spoint_t operator- ( point_tt const & other ) const { return spoint_t( x-other.x, y-other.y, z-other.z ); }
         
         point_tt operator/ ( value_type const v ) const { return point_tt( x/v, y/v, z/v ); }
+        point_tt operator* ( value_type const v ) const { return point_tt( x*v, y*v, z*v ); }
         
         point_tt const & operator+= ( point_tt const & other ) { x += other.x; y += other.y; z += other.z; return *this; }
 };

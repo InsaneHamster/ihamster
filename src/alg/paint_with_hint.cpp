@@ -88,7 +88,7 @@ fill( helper_t & h, int const x, int const y )
                                 int z=10;
                         
                         if( !row_sobel[pt.x] )
-                                median += row_org[x], ++num_dots;
+                                median += row_org[pt.x], ++num_dots;
                         else
                         {
                                 //color3f_t const & cl = row_org[pt.x];
@@ -98,8 +98,8 @@ fill( helper_t & h, int const x, int const y )
                                 float diff = sqrtf(expectation.distance_sq(cl)) + row_sobel[pt.x]/60.f*h.tolerance;
                                 if( diff > h.tolerance )
                                         allow = false;
-                                //else
-                                //        median += row_org[x], ++num_dots;
+                                else
+                                        median += row_org[pt.x], ++num_dots;
                         }
                         
                         if( allow )
