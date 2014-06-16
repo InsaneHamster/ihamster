@@ -2,6 +2,7 @@
 #include <cmn/image.hpp>
 #include <adapter/image.hpp>
 #include <limits.h>
+#include <string>
 
 namespace alg
 {
@@ -77,7 +78,7 @@ seg_create_objects( std::vector< seg_object_t > * objects, uint16_t max_color, c
                 
                 wo.wc.x /= dots;
                 wo.wc.y /= dots;
-                wo.square = dots;
+                wo.square = (int)dots;
         }        
 }
         

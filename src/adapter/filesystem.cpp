@@ -13,6 +13,8 @@
 namespace adapter
 {
 
+	//motivation: http://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe
+	
 #if defined( __linux__ )
 static const char gs_self[] = "/proc/self/exe";
 std::string fs_executable_name()
@@ -25,10 +27,16 @@ std::string fs_executable_name()
         return std::string( buf, written );                
 }
 #elif defined( __APPLE__ )
+	#include <mach-o/dyld.h>
 std::string fs_executable_name()
 {
-        static_assert(false, "Vova, implement me via _NSGetExecutablePath() !");        //see http://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe
-        return std::string();
+	uint32_t size = 2048;
+	std::vector<char> buf(size, '\0');
+	int ret = _NSGetExecutablePath(buf.data(), &size);
+	if (ret != 0) {
+		cmn::log_and_throw<fs_execption>( ERANGE, "adapter::fs_executable_name buffer is not enough, needed size: %d", size );
+	}
+	return std::string(buf.data());
 }
 #endif
 
@@ -42,7 +50,8 @@ std::string fs_executable_dir( delimiter_add_et da )
 
 std::string fs_resource_dir(delimiter_add_et da )
 {
-        return fs_executable_dir(da);
+	// TODO: resource folder in a bundle on mac.
+	return fs_executable_dir(da);
 }
 
 

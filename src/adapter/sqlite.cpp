@@ -63,16 +63,16 @@ sqlite_query_pt sqlite_query_create( sqlite_db_pt const & db, char const * szQue
 //index here is 1-based! [sqlite requirement]
 void sqlite_query_embed(sqlite_query_pt const & q, void const * buf, std::type_info const & ti, int one_based_index)
 {
-        int ret;
+        int ret = SQLITE_ERROR;
         
         if( ti == typeid(blob_t) )        
-                ret = sqlite3_bind_blob( q->stm_handle, one_based_index, ((blob_t const*)buf)->ptr, ((blob_t const*)buf)->size, SQLITE_TRANSIENT );
+                ret = sqlite3_bind_blob( q->stm_handle, one_based_index, ((blob_t const*)buf)->ptr, (int)((blob_t const*)buf)->size, SQLITE_TRANSIENT );
         else if( ti == typeid(int) )
                 ret = sqlite3_bind_int( q->stm_handle, one_based_index, *(int const*)buf );
         else if( ti == typeid(int64_t) )
                 ret = sqlite3_bind_int64( q->stm_handle, one_based_index, *(int64_t const*)buf );
         else if( ti == typeid(std::string) )
-                ret = sqlite3_bind_text( q->stm_handle, one_based_index, ((std::string const*)buf)->c_str(), ((std::string const*)buf)->size(), SQLITE_TRANSIENT );
+                ret = sqlite3_bind_text( q->stm_handle, one_based_index, ((std::string const*)buf)->c_str(), (int)((std::string const*)buf)->size(), SQLITE_TRANSIENT );
         else if( ti == typeid(double) )
                 ret = sqlite3_bind_double( q->stm_handle, one_based_index, *(double const*)buf );
         else if( ti == typeid(float) )

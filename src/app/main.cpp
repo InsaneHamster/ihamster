@@ -46,7 +46,7 @@ static void find_objects( std::string const & dir_dst, std::string const & dir_s
         fs_dir_contents( &filesv, dir_src );
         std::regex rx(".*\\.png");        
         
-        int filesv_size = filesv.size();
+        size_t filesv_size = filesv.size();
         for( int i = 0; i != filesv_size; ++i )
         {
                 fs_file_info_t const & fi = filesv[i];

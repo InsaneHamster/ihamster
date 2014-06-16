@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		210539EA1939DBA500C5C221 /* watershed2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 210539E91939DBA500C5C221 /* watershed2.cpp */; };
 		21167000192C74DC00E57781 /* filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21166FFF192C74DC00E57781 /* filesystem.cpp */; };
 		21187ECF192202F600B0D5CD /* plotcirc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21187ECE192202F600B0D5CD /* plotcirc.cpp */; };
 		218F30031927AE7D00B11317 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 218F2FF31927AD5300B11317 /* main.cpp */; };
@@ -16,6 +15,11 @@
 		218F30071927AFA100B11317 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 218F30061927AFA100B11317 /* Foundation.framework */; };
 		218F30081927AFCC00B11317 /* image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE045F18AFA00B00A16CB4 /* image.mm */; };
 		21AEAD2E192F310700D2F80A /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21AEAD2D192F310700D2F80A /* config.cpp */; };
+		21CCB053194CC23300F7A864 /* diagram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB04F194CC23300F7A864 /* diagram.cpp */; };
+		21CCB054194CC23300F7A864 /* paint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB050194CC23300F7A864 /* paint.cpp */; };
+		21CCB055194CC23300F7A864 /* seg_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB051194CC23300F7A864 /* seg_object.cpp */; };
+		21CCB056194CC23300F7A864 /* sobel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB052194CC23300F7A864 /* sobel.cpp */; };
+		21CCB058194CCF6200F7A864 /* paint_with_hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB057194CCF6200F7A864 /* paint_with_hint.cpp */; };
 		21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FB191F5F0700A16A86 /* filter.cpp */; };
 		21D2B1FE191F5F0700A16A86 /* plotcirc_db.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FC191F5F0700A16A86 /* plotcirc_db.cpp */; };
 		21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FF191F5F3000A16A86 /* image_utils.cpp */; };
@@ -32,7 +36,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		210539E91939DBA500C5C221 /* watershed2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = watershed2.cpp; sourceTree = "<group>"; };
 		21166FFD192C743800E57781 /* filesystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filesystem.hpp; sourceTree = "<group>"; };
 		21166FFE192C749C00E57781 /* apply.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = apply.hpp; sourceTree = "<group>"; };
 		21166FFF192C74DC00E57781 /* filesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filesystem.cpp; sourceTree = "<group>"; };
@@ -43,6 +46,15 @@
 		218F30061927AFA100B11317 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		21AEAD2C192F30F600D2F80A /* config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = config.hpp; sourceTree = "<group>"; };
 		21AEAD2D192F310700D2F80A /* config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = config.cpp; sourceTree = "<group>"; };
+		21CCB04B194CC21B00F7A864 /* diagram.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = diagram.hpp; sourceTree = "<group>"; };
+		21CCB04C194CC21B00F7A864 /* paint.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = paint.hpp; sourceTree = "<group>"; };
+		21CCB04D194CC21B00F7A864 /* seg_object.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = seg_object.hpp; sourceTree = "<group>"; };
+		21CCB04E194CC21B00F7A864 /* sobel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sobel.hpp; sourceTree = "<group>"; };
+		21CCB04F194CC23300F7A864 /* diagram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = diagram.cpp; sourceTree = "<group>"; };
+		21CCB050194CC23300F7A864 /* paint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paint.cpp; sourceTree = "<group>"; };
+		21CCB051194CC23300F7A864 /* seg_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = seg_object.cpp; sourceTree = "<group>"; };
+		21CCB052194CC23300F7A864 /* sobel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sobel.cpp; sourceTree = "<group>"; };
+		21CCB057194CCF6200F7A864 /* paint_with_hint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paint_with_hint.cpp; sourceTree = "<group>"; };
 		21D2B1F5191F5EAC00A16A86 /* filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filter.hpp; sourceTree = "<group>"; };
 		21D2B1F6191F5EAC00A16A86 /* plotcirc_db.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = plotcirc_db.hpp; sourceTree = "<group>"; };
 		21D2B1F7191F5ECD00A16A86 /* image_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = image_utils.hpp; sourceTree = "<group>"; };
@@ -180,7 +192,11 @@
 		5ADE043918AF982600A16CB4 /* alg */ = {
 			isa = PBXGroup;
 			children = (
-				210539E91939DBA500C5C221 /* watershed2.cpp */,
+				21CCB057194CCF6200F7A864 /* paint_with_hint.cpp */,
+				21CCB04F194CC23300F7A864 /* diagram.cpp */,
+				21CCB050194CC23300F7A864 /* paint.cpp */,
+				21CCB051194CC23300F7A864 /* seg_object.cpp */,
+				21CCB052194CC23300F7A864 /* sobel.cpp */,
 				21D2B1FB191F5F0700A16A86 /* filter.cpp */,
 				21D2B1FC191F5F0700A16A86 /* plotcirc_db.cpp */,
 				5ADE043B18AF982600A16CB4 /* pattern_study.cpp */,
@@ -259,6 +275,10 @@
 		5ADE045018AF987300A16CB4 /* alg */ = {
 			isa = PBXGroup;
 			children = (
+				21CCB04B194CC21B00F7A864 /* diagram.hpp */,
+				21CCB04C194CC21B00F7A864 /* paint.hpp */,
+				21CCB04D194CC21B00F7A864 /* seg_object.hpp */,
+				21CCB04E194CC21B00F7A864 /* sobel.hpp */,
 				21D2B1F5191F5EAC00A16A86 /* filter.hpp */,
 				21D2B1F6191F5EAC00A16A86 /* plotcirc_db.hpp */,
 				5ADE045118AF987300A16CB4 /* pattern.hpp */,
@@ -390,20 +410,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				21D2B1FE191F5F0700A16A86 /* plotcirc_db.cpp in Sources */,
+				21CCB056194CC23300F7A864 /* sobel.cpp in Sources */,
+				21CCB053194CC23300F7A864 /* diagram.cpp in Sources */,
 				21FB64A519274A4E00B2F651 /* sqlite.cpp in Sources */,
 				5ADE044918AF982600A16CB4 /* pattern_study.cpp in Sources */,
+				21CCB055194CC23300F7A864 /* seg_object.cpp in Sources */,
 				21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */,
 				21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */,
+				21CCB054194CC23300F7A864 /* paint.cpp in Sources */,
 				5ADE044A18AF982600A16CB4 /* watershed.cpp in Sources */,
 				5ADE044B18AF982600A16CB4 /* main.cpp in Sources */,
 				5ADE044C18AF982600A16CB4 /* log.cpp in Sources */,
 				21187ECF192202F600B0D5CD /* plotcirc.cpp in Sources */,
 				21AEAD2E192F310700D2F80A /* config.cpp in Sources */,
 				21D2B203191F5F3000A16A86 /* image.cpp in Sources */,
+				21CCB058194CCF6200F7A864 /* paint_with_hint.cpp in Sources */,
 				21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */,
 				21167000192C74DC00E57781 /* filesystem.cpp in Sources */,
 				218F30081927AFCC00B11317 /* image.mm in Sources */,
-				210539EA1939DBA500C5C221 /* watershed2.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

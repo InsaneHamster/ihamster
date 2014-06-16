@@ -82,7 +82,14 @@ struct lab_mask_t
         };
 };
 
-
+//reason: http://stackoverflow.com/questions/8016780/undefined-reference-to-static-constexpr-char
+constexpr const int rgb_mask_t::maskr[3][3];
+constexpr const int rgb_mask_t::maskg[3][3];
+constexpr const int rgb_mask_t::maskb[3][3];
+constexpr const int hsv_mask_t::maskr[3][3];
+constexpr const int hsv_mask_t::maskg[3][3];
+constexpr const int hsv_mask_t::maskb[3][3];
+constexpr const float lab_mask_t::mask[3][3];
 
 template< typename M >          //M stands for Mask, see above 
 static void
