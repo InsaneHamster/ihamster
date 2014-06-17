@@ -434,7 +434,7 @@ static void sobel_test_do_rest( cmn::image_pt const & img, std::string const & n
         //uint8_t cutting_point = alg::diagram_find_cutting_point( stat.diagram, stat.max_grad );
         
         //cmn::image_pt img_bw = cmn::image_bw_from_g8(img_sobel, stat.max_grad/7);
-        cmn::image_pt img_colored_g16 = alg::image_paint_with_hint( img_sobel, img, 0.1f );
+        cmn::image_pt img_colored_g16 = alg::image_paint_with_hint( img_sobel, img, 0.07f );
         cmn::image_pt img_colored_rgba = alg::seg_color(img_colored_g16);
         
         adapter::image_save_to_png( img_colored_rgba, (dir_dst + name_base +"_sobel_colored.png").c_str() );

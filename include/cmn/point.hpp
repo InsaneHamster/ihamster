@@ -72,6 +72,8 @@ struct point_tt<T, 3>
         T distance_sq( point_tt const & p ) const { T dx = x-p.x; T dy = y - p.y; T dz = z - p.z; return dx*dx + dy*dy + dz*dz; }
         T sq() const { return x*x + y*y + z*z; };
         
+        T dot(point_tt const & p) const { return x*p.x + y*p.y + z*p.z; };
+        
         bool operator == ( point_tt const & other ) const { return x == other.x && y == other.y && z == other.z; }
         bool operator != ( point_tt const & other ) const { return x != other.y || y != other.y || z != other.z; }
         
