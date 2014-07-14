@@ -1,8 +1,10 @@
 #include <alg/paint.hpp>
+#include <alg/line.hpp>
 #include <cmn/image.hpp>
 #include <cmn/point.hpp>
 #include <vector>
-#include <deque>
+//#include <deque>
+#include <set>
 #include <string.h>
 #include <math.h>
 
@@ -32,9 +34,6 @@ namespace
 static bool
 try_advance( helper_t & h, point2s_t const pt )
 {
-        //if( pt.x<0 || pt.y<0 || pt.x >= size.x || pt.y >= size.y )
-        //        return false;        
-                        
         //color3f_t const * const row_org = h.img_org->row<color3f_t>(y);
         uint8_t const * const row_sobel = h.img_sobel->row<uint8_t>(pt.y);
         
@@ -56,6 +55,88 @@ try_advance( helper_t & h, point2s_t const pt )
         return false;
 }
 
+//finds eigenvectors. I - iterator of points
+template<typename I> static bool 
+approx_by_line( color3f_t * point, color3f_t * dir, I begin, I end )
+{
+        color3f_t exp(0.f,0.f,0.f);  //expectation that is
+        int       dots_number = 0;
+        
+        I iter = begin;
+        while( iter != end )
+        {
+                exp += *iter;
+                ++dots_number;
+                ++iter;
+        }
+        
+        if( dots_number < 2 )           //no enough points to specify a line
+                return false;
+        
+        exp /= dots_number;
+        
+        //now compute eigenvectors
+        color3f_t ev(0,0,0);
+        iter = begin;
+        
+        while( iter != end )
+        {
+                color3f_t const & c = *iter;
+                color3f_t d = c - exp;
+                ev += d*d;                                
+                ++iter;
+        }
+        
+        ev /= dots_number-1;
+        float const ev_length = sqrtf(ev.sq());                
+        ev /= ev_length;
+        
+        *dir = ev;  
+        *point = exp;                        
+        return true;
+}
+
+template<typename I> static bool 
+approx_by_segment( color3f_t * s0, color3f_t * s1, I begin, I end )
+{
+        color3f_t exp(0.f,0.f,0.f);  //expectation that is
+        int       dots_number = 0;
+        
+        I iter = begin;
+        while( iter != end )
+        {
+                exp += *iter;
+                ++dots_number;
+                ++iter;
+        }
+        
+        if( dots_number < 2 )           //no enough points to specify a line
+                return false;
+        
+        exp /= dots_number;
+        
+        //now compute eigenvectors
+        color3f_t ev(0,0,0);
+        iter = begin;
+        
+        while( iter != end )
+        {
+                color3f_t const & c = *iter;
+                color3f_t d = c - exp;
+                ev += d*d;                                
+                ++iter;
+        }
+        
+        ev /= dots_number-1;
+        //float const ev_length = sqrtf(ev.sq());                
+        //ev /= ev_length;
+        
+        *s0 = exp - ev;
+        *s1 = exp + ev;        
+        return true;
+}
+
+
 static void
 fill( helper_t & h, int const x, int const y )
 {
@@ -65,9 +146,10 @@ fill( helper_t & h, int const x, int const y )
         
         point2s_t const size(h.img_org->header.width, h.img_org->header.height);                
         
-        color3f_t median = color3f_t(0,0,0);
-        int num_dots = 0;
-        
+        color3f_t const anchor =  h.img_org->row<color3f_t>(y)[x];
+        color3f_t s0(anchor); int num_points0 = 1;
+        color3f_t s1(anchor); int num_points1 = 1;
+                        
         
         while( h.min_layer < 256 )
         {        
@@ -83,27 +165,34 @@ fill( helper_t & h, int const x, int const y )
                         color3f_t const * const row_org = h.img_org->row<color3f_t>(pt.y);
                         uint8_t const * const row_sobel = h.img_sobel->row<uint8_t>(pt.y);
                         bool allow = true;
+                                                                        
+                        color3f_t const & cl = row_org[pt.x];     
+                        color3f_t const s0n = s0 / num_points0;
+                        color3f_t const s1n = s1 / num_points1;
                         
-                        if( pt.x == 234 && pt.y == 276 )
-                                int z=10;
                         
-                        if( !row_sobel[pt.x] )
-                                median += row_org[pt.x], ++num_dots;
-                        else
-                        {
-                                //color3f_t const & cl = row_org[pt.x];
-                                color3f_t cl = row_org[pt.x];
-                                color3f_t expectation = median / num_dots;
-                                                                
-                                float diff = sqrtf(expectation.distance_sq(cl)) + row_sobel[pt.x]/60.f*h.tolerance;
-                                if( diff > h.tolerance )
-                                        allow = false;
-                                else
-                                        median += row_org[pt.x], ++num_dots;
-                        }
+                        float diff;
+                        part_et part;
+                                                  
+                        //diff = sqrtf(anchor.distance_sq(cl)) + row_sobel[pt.x]/60.f*h.tolerance;                                                
+                        diff = std::max(distance_point2segment( &part, cl, s0n, s1n ), row_sobel[pt.x]*h.tolerance/30.f);
+                        //diff = (distance_point2segment( &part, cl, s0n, s1n ) + row_sobel[pt.x]*h.tolerance/30.f);                                                
                         
+                        if( diff > h.tolerance )
+                                allow = false;                                                        
+                                                
                         if( allow )
-                        {                        
+                        {                                               
+                                if( cl.r < anchor.r )                                
+                                {
+                                        s0 += cl; num_points0++;
+                                }
+                                else
+                                {
+                                        s1 += cl; num_points1++;
+                                }                                                                
+
+                                
                                 point2s_t const p10(pt.x-1, pt.y);
                                 point2s_t const p12(pt.x+1, pt.y);
                                 point2s_t const p01(pt.x, pt.y-1);
@@ -119,7 +208,7 @@ fill( helper_t & h, int const x, int const y )
                         
                         backtrace = &h.backtraces[h.min_layer];                        
                 }
-                
+                                
                 ++h.min_layer;                                
         }
         

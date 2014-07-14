@@ -4,8 +4,6 @@
 #include <math.h>
 #include <float.h>
 
-cmn::color3f_t max_lab(FLT_MAX,FLT_MAX,FLT_MAX);
-
 namespace cmn
 {
 
@@ -185,7 +183,7 @@ image_pt image_lab_from_rgba( image_pt const & img_srcp )
                 point3f_t * const row_dst = img_dst->row<point3f_t>(y);
                 
                 for( int x = 0; x < width; ++x )
-                {  
+                {                          
                         color4b_t const cl_src = row_src[x];
                         float const rf = cl_src.r / 255.f, gf = cl_src.g/255.f, bf=cl_src.b/255.f;
                         float const rl = convert_rgb_xyz(rf);
@@ -203,9 +201,6 @@ image_pt image_lab_from_rgba( image_pt const & img_srcp )
                         point3f_t & cd = row_dst[x];
                         cd.x = L; cd.y = a; cd.z = b;                                                
                         
-                        if( max_lab.r > L ) max_lab.r = L;
-                        if( max_lab.g > a ) max_lab.g = a;
-                        if( max_lab.b > b ) max_lab.b = b;
                 }
         }
         

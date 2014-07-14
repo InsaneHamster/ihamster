@@ -72,7 +72,10 @@ struct point_tt<T, 3>
         T distance_sq( point_tt const & p ) const { T dx = x-p.x; T dy = y - p.y; T dz = z - p.z; return dx*dx + dy*dy + dz*dz; }
         T sq() const { return x*x + y*y + z*z; };
         
-        T dot(point_tt const & p) const { return x*p.x + y*p.y + z*p.z; };
+        T dot(point_tt const & p) const { return x*p.x + y*p.y + z*p.z; };              //dot product
+        
+        //vector product
+        point_tt vec(point_tt const & p) const { return point_tt( y*p.z - z*p.y, z*p.x - x*p.z, x*p.y - y*p.x ); }        
         
         bool operator == ( point_tt const & other ) const { return x == other.x && y == other.y && z == other.z; }
         bool operator != ( point_tt const & other ) const { return x != other.y || y != other.y || z != other.z; }
@@ -82,8 +85,29 @@ struct point_tt<T, 3>
         
         point_tt operator/ ( value_type const v ) const { return point_tt( x/v, y/v, z/v ); }
         point_tt operator* ( value_type const v ) const { return point_tt( x*v, y*v, z*v ); }
+        point_tt operator* ( point_tt const & other ) const { return point_tt( x*other.x, y*other.y, z*other.z ); }
         
         point_tt const & operator+= ( point_tt const & other ) { x += other.x; y += other.y; z += other.z; return *this; }
+        
+        point_tt const & operator/= ( value_type const v ) { x /= v; y /= v; z /= v; return *this; }
+};
+
+template< typename T, int D >
+struct point_less_tt {};
+
+template< typename T>
+struct point_less_tt<T,3> 
+{
+        static int const dimension = 3;
+        bool operator()( point_tt< T, dimension > const & p1, point_tt< T, dimension > const & p2 ) const
+        {                
+                if( p1.x < p2.x ) return true;
+                if( p2.x < p1.x ) return false;
+                if( p1.y < p2.y ) return true;
+                if( p2.y < p1.y ) return false;
+                if( p1.z < p2.z ) return true;
+                return false;                
+        }
 };
 
 

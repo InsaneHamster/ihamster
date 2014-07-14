@@ -13,8 +13,6 @@
 #include <alg/seg_object.hpp>
 //#include <alg/diagram.hpp>
 
-extern cmn::color3f_t max_lab;
-
 namespace alg 
 {
 
@@ -185,8 +183,8 @@ sobel_template( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt con
                 for( int x = 0; x <= lastx; ++x )        
                         row_dst1[x] = row_dst0[x];
 
-                row_dst0 = img_src->row<uint8_t>(0);
-                row_dst1 = img_src->row<uint8_t>(1);
+                row_dst0 = img_dst->row<uint8_t>(0);
+                row_dst1 = img_dst->row<uint8_t>(1);
                 for( int x = 0; x <= lastx; ++x )        
                         row_dst0[x] = row_dst1[x];
 
@@ -194,7 +192,7 @@ sobel_template( cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt con
                 int const prelastx = lastx - 1;
                 for( int y = 1; y < lasty; ++y )
                 {
-                        row_dst0 = img_src->row<uint8_t>(y);
+                        row_dst0 = img_dst->row<uint8_t>(y);
                         row_dst0[0] = row_dst0[1];
                         row_dst0[lastx] = row_dst0[prelastx];
                 }
@@ -302,8 +300,8 @@ void sobel_lab(cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt cons
                 for( int x = 0; x <= lastx; ++x )        
                         row_dst1[x] = row_dst0[x];
 
-                row_dst0 = img_src->row<uint8_t>(0);
-                row_dst1 = img_src->row<uint8_t>(1);
+                row_dst0 = img_dst->row<uint8_t>(0);
+                row_dst1 = img_dst->row<uint8_t>(1);
                 for( int x = 0; x <= lastx; ++x )        
                         row_dst0[x] = row_dst1[x];
 
@@ -311,7 +309,7 @@ void sobel_lab(cmn::image_pt * img_edge, sobel_stat_t * stat, cmn::image_pt cons
                 int const prelastx = lastx - 1;
                 for( int y = 1; y < lasty; ++y )
                 {
-                        row_dst0 = img_src->row<uint8_t>(y);
+                        row_dst0 = img_dst->row<uint8_t>(y);
                         row_dst0[0] = row_dst0[1];
                         row_dst0[lastx] = row_dst0[prelastx];
                 }
@@ -432,9 +430,10 @@ static void sobel_test_do_rest( cmn::image_pt const & img, std::string const & n
         
         //alg::diagram_make_integral( stat.diagram, stat.max_grad );
         //uint8_t cutting_point = alg::diagram_find_cutting_point( stat.diagram, stat.max_grad );
-        
-        //cmn::image_pt img_bw = cmn::image_bw_from_g8(img_sobel, stat.max_grad/7);
+                
         cmn::image_pt img_colored_g16 = alg::image_paint_with_hint( img_sobel, img, 0.07f );
+        //cmn::image_pt img_colored_g16 = alg::image_paint_with_hint2( img_sobel, img, 0.04f );
+        
         cmn::image_pt img_colored_rgba = alg::seg_color(img_colored_g16);
         
         adapter::image_save_to_png( img_colored_rgba, (dir_dst + name_base +"_sobel_colored.png").c_str() );
@@ -449,11 +448,11 @@ void sobel_test()
         adapter::fs_make_dir( dir_objects );                
 
         std::vector<adapter::fs_file_info_t> files;
-        adapter::fs_dir_contents( &files, dir_src );
+        //adapter::fs_dir_contents( &files, dir_src );
         
         adapter::fs_file_info_t fi1;
-        fi1.name = "c.png";
-        //files.push_back(fi1);
+        fi1.name = "post-1178333-1266493347.png";
+        files.push_back(fi1);
         
         for( size_t i = 0; i < files.size(); ++i )
         {        
@@ -466,9 +465,7 @@ void sobel_test()
                 
                 //sobel_test_do_rest(img, base_name);
                 sobel_test_do_rest(img_lab, base_name+"_lab");   
-        }
-        
-        printf("max_lab: %g,%g,%g\n", max_lab.r, max_lab.g, max_lab.b );
+        }                
 }
 
 }

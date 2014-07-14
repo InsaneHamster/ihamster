@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 
 SET( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}" )
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ") #-fsanitize=address" )
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -ggdb" )
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ") #-fsanitize=address")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") # -fsanitize=address" )
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -ggdb" )
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}" ) # -fsanitize=address")
 
 find_package(PNG REQUIRED)
 
@@ -21,10 +21,12 @@ set(IHAMSTER_CPP_FILES
 	alg/diagram.cpp
 	alg/paint.cpp
 	alg/paint_with_hint.cpp
+	alg/paint_with_hint2.cpp
 	alg/plotcirc_db.cpp
 	alg/seg_object.cpp
 	alg/sobel.cpp	
-	alg/watershed.cpp	
+	alg/watershed.cpp
+	alg/watershed2.cpp	
 	app/main.cpp
 	cmn/log.cpp
 	cmn/image.cpp

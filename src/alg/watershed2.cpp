@@ -4,6 +4,7 @@
 #include <cmn/log.hpp>
 #include <cmn/utils.hpp>
 #include <adapter/image.hpp>    //to save to png file
+#include <cmn/image_utils.hpp>
 #include <alg/seg_object.hpp>
 
 #include <limits.h>
@@ -19,9 +20,9 @@
 
 
 
-static const int16_t c_grad_tolerance_find = 5;
-static const int16_t c_grad_tolerance_flood = 5;
-static const int16_t c_grad_sharp_border = 20;          //it's definitely another object!
+static float const c_grad_tolerance_find = 1;
+static float const c_grad_tolerance_flood = 1;
+static float const c_grad_sharp_border = 20;          //it's definitely another object!
 
 namespace alg
 {
@@ -33,7 +34,7 @@ namespace
 struct lowland_t
 {
         point2w_t               center;        
-        int16_t                 deepness;       //brightness in center
+        float                   deepness;       //brightness in center
         uint16_t                color;          //0-based
         std::vector<point2w_t>  border;
         std::vector<point2w_t>  border2;          //back-buffer
@@ -53,21 +54,25 @@ struct helper_t
 } //end of anonymous namespace
 
 
-static int16_t 
-grad( color4b_t const c1, color4b_t const c2 ) 
+static float 
+grad( color3f_t const & c1, color3f_t const & c2 ) 
 {
-       int16_t v = ((short)c1.r - (short)c2.r)*int16_t(5)  + ((short)c1.g - (short)c2.g)*int16_t(9) + (((short)c1.b - (short)c2.b)<<1);
-       return v >> 4;
+        float const cr = c1.r - c2.r;
+//         float const cg = c1.g - c2.g;
+//         float const cb = c1.b - c2.b;
+//         if( (cg*cg + cb*cb) > 100 )
+//                 cr = -1000.f;        
+        return cr; // - sqrtf(cg*cg + cb*cb);
 }
 
-static int16_t
-gradt( color4b_t const c1, color4b_t const c2 )
+static float
+gradt( color3f_t const & c1, color3f_t const & c2 )
 {
         return grad(c1,c2) + c_grad_tolerance_find;
 }
 
-static int16_t
-gradtl( color4b_t const c1, color4b_t const c2 )
+static float
+gradtl( color3f_t const & c1, color3f_t const & c2 )
 {
         return grad(c1,c2) + c_grad_tolerance_flood;
 }
@@ -76,18 +81,18 @@ gradtl( color4b_t const c1, color4b_t const c2 )
 static void 
 ll_examine_neighbors(helper_t & h, image_t * img_color, image_t const * img_src, int const x, int const y)
 {
-        color4b_t range[3][3];
-        int16_t   grads[3][3];      
-        color4b_t const * row;
+        color3f_t range[3][3];
+        float   grads[3][3];      
+        color3f_t const * row;
         
-        row = img_src->row<color4b_t>( y-1 );        
+        row = img_src->row<color3f_t>( y-1 );        
         range[0][0] = row[x-1]; range[0][1] = row[x]; range[0][2] = row[x+1];
-        row = img_src->row<color4b_t>( y );
+        row = img_src->row<color3f_t>( y );
         range[1][0] = row[x-1]; range[1][1] = row[x]; range[1][2] = row[x+1];
-        row = img_src->row<color4b_t>( y+1 );
+        row = img_src->row<color3f_t>( y+1 );
         range[2][0] = row[x-1]; range[2][1] = row[x]; range[2][2] = row[x+1];
         
-        color4b_t const middle = range[1][1];
+        color3f_t const middle = range[1][1];
         grads[0][0] = gradt( middle, range[0][0] ); grads[0][1] = gradt( middle, range[0][1] );  grads[0][2] = gradt( middle, range[0][2] );
         grads[1][0] = gradt( middle, range[1][0] ); grads[1][1] = 0;                             grads[1][2] = gradt( middle, range[1][2] );
         grads[2][0] = gradt( middle, range[2][0] ); grads[2][1] = gradt( middle, range[2][1] );  grads[2][2] = gradt( middle, range[2][2] );
@@ -101,7 +106,7 @@ ll_examine_neighbors(helper_t & h, image_t * img_color, image_t const * img_src,
                 
                 for( int gx = 0; gx < 3; ++gx)
                 {
-                        int16_t v = grads[gy][gx];
+                        float v = grads[gy][gx];
                         if( v < 0 )
                         {       //grads[gy][gx] is higher than grads[x][y] ... abort                                
                                 goto exit_loop;
@@ -134,7 +139,7 @@ ll_examine_neighbors(helper_t & h, image_t * img_color, image_t const * img_src,
                 ll.center = point2w_t(x,y);
                 ll.border.push_back(ll.center);
                 ll.color = cl;
-                ll.deepness = grad( range[1][1], color4b_t(0,0,0,255) );
+                ll.deepness = grad( range[1][1], color3f_t(0,0,0) );
                 h.lowlands.push_back( ll );
         }                
 exit_loop:;
@@ -168,6 +173,7 @@ find_lowlands( helper_t & h )
         auto sort_by_deepness = [&lowlands]( int a, int b )
         {
                 return lowlands[a].border.size() > lowlands[b].border.size();
+                //return lowlands[a].deepness > lowlands[b].deepness;
         };
                                 
         //sort them all
@@ -178,29 +184,29 @@ find_lowlands( helper_t & h )
 static void
 grow_contour_examine_neighbors( helper_t & h, lowland_t & ll, image_t * img_color, image_t const * img_src, point2w_t const pt )
 {
-        color4b_t               range[3][3];
-        int16_t                 grads[3][3];        
-        color4b_t const *       row;
+        color3f_t               range[3][3];
+        float                   grads[3][3];        
+        color3f_t const *       row;
 
         int16_t const lastw = img_src->header.width - 1;
         int16_t const lasth = img_src->header.height - 1;
         
         if( pt.y > 0 )
         {
-                row = img_src->row<color4b_t>( pt.y-1 );        
+                row = img_src->row<color3f_t>( pt.y-1 );        
                 if(pt.x > 0) range[0][0] = row[pt.x-1]; range[0][1] = row[pt.x]; if(pt.x<lastw) range[0][2] = row[pt.x+1];
         }
-        row = img_src->row<color4b_t>( pt.y );
+        row = img_src->row<color3f_t>( pt.y );
         
         if(pt.x > 0) range[1][0] = row[pt.x-1]; range[1][1] = row[pt.x]; if(pt.x<lastw) range[1][2] = row[pt.x+1];
         
         if( pt.y < lasth )
         {
-                row = img_src->row<color4b_t>( pt.y+1 );
+                row = img_src->row<color3f_t>( pt.y+1 );
                 if(pt.x > 0) range[2][0] = row[pt.x-1]; range[2][1] = row[pt.x]; if(pt.x<lastw) range[2][2] = row[pt.x+1];
         }
 
-        color4b_t middle = range[1][1];
+        color3f_t middle = range[1][1];
         grads[0][0] = gradtl( middle, range[0][0] ); grads[0][1] = gradtl( middle, range[0][1] );  grads[0][2] = gradtl( middle, range[0][2] );
         grads[1][0] = gradtl( middle, range[1][0] ); grads[1][1] = 0;                             grads[1][2] = gradtl( middle, range[1][2] );
         grads[2][0] = gradtl( middle, range[2][0] ); grads[2][1] = gradtl( middle, range[2][1] );  grads[2][2] = gradtl( middle, range[2][2] );
@@ -221,7 +227,7 @@ grow_contour_examine_neighbors( helper_t & h, lowland_t & ll, image_t * img_colo
                         uint16_t color_dst = row_dst[ix];
                         if( !color_dst )        //free
                         {                        
-                                int16_t const val = grads[gy][gx];
+                                float const val = grads[gy][gx];
                                 if(val >= 0 && val < c_grad_sharp_border)            //can grow... 
                                 {
                                         ll.border2.emplace_back(ix,iy);     
@@ -305,13 +311,13 @@ flood3( helper_t & h )
         } while( has_points );     
 }
 
-
-void watershed( std::vector< seg_object_t > * objects, cmn::image_pt * colored, cmn::image_pt const & img )
+void watershed2( std::vector< seg_object_t > * objects, cmn::image_pt * colored, cmn::image_pt const & img_lab )
 {
         helper_t h;
-        int width = img->header.width, height = img->header.height;
+        int const width = img_lab->header.width;
+        int const height = img_lab->header.height;
         
-        h.img_src = img;
+        h.img_src = img_lab;
         h.img_color = cmn::image_create( width, height, cmn::pitch_default, cmn::format_g16 );
         memset( h.img_color->bytes, 0, height * h.img_color->header.pitch );
         h.color = 0;
@@ -326,32 +332,48 @@ void watershed( std::vector< seg_object_t > * objects, cmn::image_pt * colored, 
         
         if( colored )
                 *colored = seg_color( h.img_color );
+
 }
 
 
-void watershed_test()
+static void 
+watershed_test_do_rest( cmn::image_pt const & img, std::string const & base_name )
+{
+        std::string dir_dst = adapter::fs_prefs_dir();
+        cmn::image_pt img_painted;
+        watershed2( 0, &img_painted, img );
+        adapter::image_save_to_png( img_painted, (dir_dst + base_name + ".png").c_str() );
+}
+
+void watershed2_test()
 {
         std::string dir_src = adapter::fs_resource_dir() + "pictures/faces_png/";
         std::string dir_dst = adapter::fs_prefs_dir();
         std::string dir_objects = dir_dst + "objects/";                
         adapter::fs_make_dir( dir_objects );                
-        cmn::image_pt img = adapter::image_create_from_png( (dir_src + "c.png").c_str() );        
-        std::vector< alg::seg_object_t > wo;
-        cmn::image_pt img_watershed;
-        alg::watershed( 0/*&wo*/, &img_watershed, img );
+
+        std::vector<adapter::fs_file_info_t> files;
+        adapter::fs_dir_contents( &files, dir_src );
         
-        adapter::image_save_to_png( img_watershed, (dir_dst + "a_colored.png").c_str() );
-        printf("found %d objects\n", (int)wo.size());
-    
-        //alg::seg_objects_save_to_png( wo, dir_objects );
+        adapter::fs_file_info_t fi1;
+        fi1.name = "c.png";
+        //files.push_back(fi1);
         
-#if 0        
-        cmn::plotcirc_pt pc = cmn::plotcirc_create( wo[3].img, wo[3].wc );        
-        pc->name = cmn::name_create("face");
-        pc->name_sub = 0;
-        adapter::plotcirc_save_to_png( pc, (dir_objects + "face.png").c_str() );
-#endif
+        for( size_t i = 0; i < files.size(); ++i )
+        {        
+                adapter::fs_file_info_t const & fi = files[i];
+                
+                cmn::image_pt img = adapter::image_create_from_png( (dir_src + fi.name).c_str() );        
+                cmn::image_pt img_lab = cmn::image_lab_from_rgba( img );
+                
+                std::string base_name = "objects/" + adapter::fs_name_ext( fi.name ).first;
+                
+                //sobel_test_do_rest(img, base_name);
+                watershed_test_do_rest(img_lab, base_name+"_lab");   
+        }
 }
 
 
 } //alg
+
+

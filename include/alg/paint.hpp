@@ -12,5 +12,8 @@ namespace alg
         //tolerance - 0..1 the larger the bigger regions will be colored/painted
         //return: image in format_g16 - where each value represents color;
         cmn::image_pt image_paint_with_hint( cmn::image_pt const & img_sobel_g8, cmn::image_pt const & img_original, float tolerance );
+        cmn::image_pt image_paint_with_hint2( cmn::image_pt const & img_sobel_g8, cmn::image_pt const & img_original, float tolerance );
+        
+        
         
 }

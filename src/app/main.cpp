@@ -85,7 +85,7 @@ int main( int argc, char const * argv[] )
 #if 1
 int main()
 {
-        //alg::watershed_test();
+        //alg::watershed2_test();
         alg::sobel_test();
        
         
