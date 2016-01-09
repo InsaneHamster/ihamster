@@ -8,68 +8,7 @@
 
 namespace adapter
 {
-	
-#if 0
-	cmn::image_pt image_create_from_png( char const * szImgPath )
-	{
-		cmn::image_root_pt img;
-		
-		// TODO: invent something!
-		
-		return img;
-	}
-#else
-namespace
-	{
-	CGContextRef MyCreateBitmapContext (int pixelsWide,
-										
-										int pixelsHigh)
-	
-	{
-		
-		CGContextRef    context = NULL;
-		CGColorSpaceRef colorSpace;
-		void *          bitmapData;
-		int             bitmapByteCount;
-		int             bitmapBytesPerRow;
-		
-		
-		bitmapBytesPerRow   = (pixelsWide * 4);// 1
-		bitmapByteCount     = (bitmapBytesPerRow * pixelsHigh);
-		
-		
-		colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);// 2
-		bitmapData = malloc( bitmapByteCount );// 3
-		
-		if (bitmapData == NULL)
-		{
-			fprintf (stderr, "Memory not allocated!");
-			return NULL;
-			
-		}
-		
-		context = CGBitmapContextCreate (bitmapData,// 4
-										 pixelsWide,
-										 pixelsHigh,
-										 8,      // bits per component
-										 bitmapBytesPerRow,
-										 colorSpace,
-										 kCGImageAlphaLast);
-		
-		if (context== NULL)
-		{
-			free (bitmapData);// 5
-			fprintf (stderr, "Context not created!");
-			return NULL;
-			
-		}
-		
-		CGColorSpaceRelease( colorSpace );// 6
-		
-		return context;// 7
-	}
-	
-	}
+
 cmn::image_pt image_create_from_png( char const * szImgPath )
 {
 @autoreleasepool
@@ -194,7 +133,7 @@ error_00:
 	return cmn::image_root_pt();
 }
 }
-#endif
+
 	
 bool image_save_to_png( cmn::image_pt const & img, char const * szImgPath )
 {

@@ -4,7 +4,7 @@
 #include <cmn/log.hpp>
 #include <cmn/utils.hpp>
 #include <adapter/image.hpp>    //to save to png file
-#include <alg/seg_object.hpp>
+#include <alg/spot.hpp>
 
 #include <limits.h>
 #include <string>
@@ -306,7 +306,7 @@ flood3( helper_t & h )
 }
 
 
-void watershed( std::vector< seg_object_t > * objects, cmn::image_pt * colored, cmn::image_pt const & img )
+void watershed( std::vector< spot_t > * objects, cmn::image_pt * colored, cmn::image_pt const & img )
 {
         helper_t h;
         int width = img->header.width, height = img->header.height;
@@ -322,10 +322,10 @@ void watershed( std::vector< seg_object_t > * objects, cmn::image_pt * colored, 
         flood3(h);
 
         if( objects )
-                seg_create_objects( objects, h.color, h.img_color );
+                spot_create( objects, h.color, h.img_color );
         
         if( colored )
-                *colored = seg_color( h.img_color );
+                *colored = spot_color( h.img_color );
 }
 
 
@@ -336,14 +336,14 @@ void watershed_test()
         std::string dir_objects = dir_dst + "objects/";                
         adapter::fs_make_dir( dir_objects );                
         cmn::image_pt img = adapter::image_create_from_png( (dir_src + "c.png").c_str() );        
-        std::vector< alg::seg_object_t > wo;
+        std::vector< alg::spot_t > wo;
         cmn::image_pt img_watershed;
         alg::watershed( 0/*&wo*/, &img_watershed, img );
         
         adapter::image_save_to_png( img_watershed, (dir_dst + "a_colored.png").c_str() );
         printf("found %d objects\n", (int)wo.size());
     
-        //alg::seg_objects_save_to_png( wo, dir_objects );
+        //alg::spots_save_to_png( wo, dir_objects );
         
 #if 0        
         cmn::plotcirc_pt pc = cmn::plotcirc_create( wo[3].img, wo[3].wc );        

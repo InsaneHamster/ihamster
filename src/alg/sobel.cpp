@@ -10,7 +10,7 @@
 #include <adapter/image.hpp>
 #include <adapter/filesystem.hpp>
 #include <alg/paint.hpp>
-#include <alg/seg_object.hpp>
+#include <alg/spot.hpp>
 //#include <alg/diagram.hpp>
 
 namespace alg 
@@ -434,7 +434,7 @@ static void sobel_test_do_rest( cmn::image_pt const & img, std::string const & n
         cmn::image_pt img_colored_g16 = alg::image_paint_with_hint( img_sobel, img, 0.07f );
         //cmn::image_pt img_colored_g16 = alg::image_paint_with_hint2( img_sobel, img, 0.04f );
         
-        cmn::image_pt img_colored_rgba = alg::seg_color(img_colored_g16);
+        cmn::image_pt img_colored_rgba = alg::spot_color(img_colored_g16);
         
         adapter::image_save_to_png( img_colored_rgba, (dir_dst + name_base +"_sobel_colored.png").c_str() );
 

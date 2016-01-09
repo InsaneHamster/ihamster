@@ -1,4 +1,4 @@
-#include <alg/seg_object.hpp>
+#include <alg/spot.hpp>
 #include <cmn/image.hpp>
 #include <adapter/image.hpp>
 #include <limits.h>
@@ -9,7 +9,7 @@ namespace alg
 using namespace cmn;
         
 void
-seg_create_objects( std::vector< seg_object_t > * objects, uint16_t max_color, cmn::image_pt img_quantized )
+spot_create( std::vector< spot_t > * objects, uint16_t max_color, cmn::image_pt img_quantized )
 {
         if( !max_color )
                 return;
@@ -53,7 +53,7 @@ seg_create_objects( std::vector< seg_object_t > * objects, uint16_t max_color, c
         {
                 bounding_box_t & b = bbs[i];
                 uint16_t color = (uint16_t)i+1;
-                seg_object_t & wo = (*objects)[i];
+                spot_t & wo = (*objects)[i];
                 wo.lt.x = b.l;
                 wo.lt.y = b.t;
                 wo.img = cmn::image_create( (b.r-b.l)+1, (b.b-b.t)+1, pitch_default, cmn::format_bw );
@@ -107,7 +107,7 @@ static cmn::color4b_t gColors[gNumColors] =
 
 
 cmn::image_pt
-seg_color( cmn::image_pt img_quantized )
+spot_color( cmn::image_pt img_quantized )
 {
         image_header_t & src_header = img_quantized->header;
         image_pt colored = cmn::image_create( src_header.width, src_header.height, cmn::pitch_default, cmn::format_rgba );
@@ -129,7 +129,7 @@ seg_color( cmn::image_pt img_quantized )
 }
 
         
-void seg_object_save_to_png( seg_object_t const * wo, char const * szPath )
+void spot_save_to_png( spot_t const * wo, char const * szPath )
 {
         cmn::image_t * img_src = wo->img.get();
         cmn::image_header_t const & hs = img_src->header;
@@ -154,7 +154,7 @@ void seg_object_save_to_png( seg_object_t const * wo, char const * szPath )
         adapter::image_save_to_png( img_dst_p, szPath );
 }
 
-void seg_objects_save_to_png( std::vector< seg_object_t > const & objects, std::string const & folder )
+void spots_save_to_png( std::vector< spot_t > const & objects, std::string const & folder )
 {
         char buf[256];
         int size = (int)objects.size();
@@ -162,7 +162,7 @@ void seg_objects_save_to_png( std::vector< seg_object_t > const & objects, std::
         {
                 sprintf(buf, "/%03d.png", i);
                 std::string path = folder + buf;
-                seg_object_save_to_png( &objects[i], path.c_str() );
+                spot_save_to_png( &objects[i], path.c_str() );
         }
 }
         

@@ -17,7 +17,7 @@
 		21AEAD2E192F310700D2F80A /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21AEAD2D192F310700D2F80A /* config.cpp */; };
 		21CCB053194CC23300F7A864 /* diagram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB04F194CC23300F7A864 /* diagram.cpp */; };
 		21CCB054194CC23300F7A864 /* paint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB050194CC23300F7A864 /* paint.cpp */; };
-		21CCB055194CC23300F7A864 /* seg_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB051194CC23300F7A864 /* seg_object.cpp */; };
+		21CCB055194CC23300F7A864 /* spot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB051194CC23300F7A864 /* spot.cpp */; };
 		21CCB056194CC23300F7A864 /* sobel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB052194CC23300F7A864 /* sobel.cpp */; };
 		21CCB058194CCF6200F7A864 /* paint_with_hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CCB057194CCF6200F7A864 /* paint_with_hint.cpp */; };
 		21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B1FB191F5F0700A16A86 /* filter.cpp */; };
@@ -27,6 +27,7 @@
 		21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21D2B201191F5F3000A16A86 /* plotcirc.cpp */; };
 		21FB64A519274A4E00B2F651 /* sqlite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21FB64A419274A4E00B2F651 /* sqlite.cpp */; };
 		5A1BACEC1928DFCB00276534 /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE044218AF982600A16CB4 /* log.cpp */; };
+		5ACCBB361C385D5A00EDDCE9 /* spot_detector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCBB351C385D5A00EDDCE9 /* spot_detector.cpp */; };
 		5ADE044918AF982600A16CB4 /* pattern_study.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043B18AF982600A16CB4 /* pattern_study.cpp */; };
 		5ADE044A18AF982600A16CB4 /* watershed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043D18AF982600A16CB4 /* watershed.cpp */; };
 		5ADE044B18AF982600A16CB4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ADE043F18AF982600A16CB4 /* main.cpp */; };
@@ -48,11 +49,11 @@
 		21AEAD2D192F310700D2F80A /* config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = config.cpp; sourceTree = "<group>"; };
 		21CCB04B194CC21B00F7A864 /* diagram.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = diagram.hpp; sourceTree = "<group>"; };
 		21CCB04C194CC21B00F7A864 /* paint.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = paint.hpp; sourceTree = "<group>"; };
-		21CCB04D194CC21B00F7A864 /* seg_object.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = seg_object.hpp; sourceTree = "<group>"; };
+		21CCB04D194CC21B00F7A864 /* spot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spot.hpp; sourceTree = "<group>"; };
 		21CCB04E194CC21B00F7A864 /* sobel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sobel.hpp; sourceTree = "<group>"; };
 		21CCB04F194CC23300F7A864 /* diagram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = diagram.cpp; sourceTree = "<group>"; };
 		21CCB050194CC23300F7A864 /* paint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paint.cpp; sourceTree = "<group>"; };
-		21CCB051194CC23300F7A864 /* seg_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = seg_object.cpp; sourceTree = "<group>"; };
+		21CCB051194CC23300F7A864 /* spot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spot.cpp; sourceTree = "<group>"; };
 		21CCB052194CC23300F7A864 /* sobel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sobel.cpp; sourceTree = "<group>"; };
 		21CCB057194CCF6200F7A864 /* paint_with_hint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paint_with_hint.cpp; sourceTree = "<group>"; };
 		21D2B1F5191F5EAC00A16A86 /* filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = filter.hpp; sourceTree = "<group>"; };
@@ -69,6 +70,8 @@
 		21D2B205191F5F8C00A16A86 /* coding_convention.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = coding_convention.txt; path = ../../doc/coding_convention.txt; sourceTree = "<group>"; };
 		21FB64A319274A1900B2F651 /* sqlite.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sqlite.hpp; sourceTree = "<group>"; };
 		21FB64A419274A4E00B2F651 /* sqlite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite.cpp; sourceTree = "<group>"; };
+		5ACCBB351C385D5A00EDDCE9 /* spot_detector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spot_detector.cpp; sourceTree = "<group>"; };
+		5ACCBB371C385D8400EDDCE9 /* spot_detector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = spot_detector.hpp; sourceTree = "<group>"; };
 		5ADE042C18AF973D00A16CB4 /* iHamster */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = iHamster; sourceTree = BUILT_PRODUCTS_DIR; };
 		5ADE043818AF982600A16CB4 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
 		5ADE043B18AF982600A16CB4 /* pattern_study.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pattern_study.cpp; sourceTree = "<group>"; };
@@ -195,11 +198,12 @@
 				21CCB057194CCF6200F7A864 /* paint_with_hint.cpp */,
 				21CCB04F194CC23300F7A864 /* diagram.cpp */,
 				21CCB050194CC23300F7A864 /* paint.cpp */,
-				21CCB051194CC23300F7A864 /* seg_object.cpp */,
+				21CCB051194CC23300F7A864 /* spot.cpp */,
 				21CCB052194CC23300F7A864 /* sobel.cpp */,
 				21D2B1FB191F5F0700A16A86 /* filter.cpp */,
 				21D2B1FC191F5F0700A16A86 /* plotcirc_db.cpp */,
 				5ADE043B18AF982600A16CB4 /* pattern_study.cpp */,
+				5ACCBB351C385D5A00EDDCE9 /* spot_detector.cpp */,
 				5ADE043D18AF982600A16CB4 /* watershed.cpp */,
 				5ADE043C18AF982600A16CB4 /* readme.txt */,
 			);
@@ -277,13 +281,14 @@
 			children = (
 				21CCB04B194CC21B00F7A864 /* diagram.hpp */,
 				21CCB04C194CC21B00F7A864 /* paint.hpp */,
-				21CCB04D194CC21B00F7A864 /* seg_object.hpp */,
+				21CCB04D194CC21B00F7A864 /* spot.hpp */,
 				21CCB04E194CC21B00F7A864 /* sobel.hpp */,
 				21D2B1F5191F5EAC00A16A86 /* filter.hpp */,
 				21D2B1F6191F5EAC00A16A86 /* plotcirc_db.hpp */,
 				5ADE045118AF987300A16CB4 /* pattern.hpp */,
 				5ADE045218AF987300A16CB4 /* pattern_study.hpp */,
 				5ADE045318AF987300A16CB4 /* pattern_sub.hpp */,
+				5ACCBB371C385D8400EDDCE9 /* spot_detector.hpp */,
 				5ADE045418AF987300A16CB4 /* watershed.hpp */,
 			);
 			path = alg;
@@ -374,7 +379,7 @@
 		5ADE042218AF950200A16CB4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0720;
 			};
 			buildConfigurationList = 5ADE042518AF950200A16CB4 /* Build configuration list for PBXProject "iHamster" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -414,7 +419,7 @@
 				21CCB053194CC23300F7A864 /* diagram.cpp in Sources */,
 				21FB64A519274A4E00B2F651 /* sqlite.cpp in Sources */,
 				5ADE044918AF982600A16CB4 /* pattern_study.cpp in Sources */,
-				21CCB055194CC23300F7A864 /* seg_object.cpp in Sources */,
+				21CCB055194CC23300F7A864 /* spot.cpp in Sources */,
 				21D2B1FD191F5F0700A16A86 /* filter.cpp in Sources */,
 				21D2B202191F5F3000A16A86 /* image_utils.cpp in Sources */,
 				21CCB054194CC23300F7A864 /* paint.cpp in Sources */,
@@ -426,6 +431,7 @@
 				21D2B203191F5F3000A16A86 /* image.cpp in Sources */,
 				21CCB058194CCF6200F7A864 /* paint_with_hint.cpp in Sources */,
 				21D2B204191F5F3000A16A86 /* plotcirc.cpp in Sources */,
+				5ACCBB361C385D5A00EDDCE9 /* spot_detector.cpp in Sources */,
 				21167000192C74DC00E57781 /* filesystem.cpp in Sources */,
 				218F30081927AFCC00B11317 /* image.mm in Sources */,
 			);
@@ -508,6 +514,7 @@
 		5ADE042618AF950200A16CB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				HEADER_SEARCH_PATHS = (
 					../../include,
 					"$(inherited)",

@@ -20,10 +20,10 @@ static void handle_source_png( std::string const & dir_dst, int file_index, std:
         char buf[256];        
         cmn::image_pt img = adapter::image_create_from_png( file.c_str() );
         
-        std::vector< alg::seg_object_t > wov;        
+        std::vector< alg::spot_t > wov;        
         alg::watershed( &wov, 0, img );
         
-        auto order_by_square = [](alg::seg_object_t const & wl, alg:: seg_object_t const & wr ) -> bool
+        auto order_by_square = [](alg::spot_t const & wl, alg:: spot_t const & wr ) -> bool
         {
                 return wl.square > wr.square;
         };
@@ -33,8 +33,8 @@ static void handle_source_png( std::string const & dir_dst, int file_index, std:
         for( int i = 0; i <  obj_size; ++i )
         {                
                 sprintf( buf, "%03d_%d", file_index, i );        
-                alg::seg_object_t const & wo = wov[i];
-                alg::seg_object_save_to_png( &wo, (dir_dst + PATH_DELIMITER_C + buf).c_str() );
+                alg::spot_t const & wo = wov[i];
+                alg::spot_save_to_png( &wo, (dir_dst + PATH_DELIMITER_C + buf).c_str() );
         }        
 }
 

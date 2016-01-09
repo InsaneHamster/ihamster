@@ -23,7 +23,7 @@ struct image_header_t
 {
         int             width;
         int             height;
-        int             pitch;          //amount of bytes in a row
+        int             pitch;          //number of bytes in a row
         format_et       format;                
         uint16_t        flags;
 };

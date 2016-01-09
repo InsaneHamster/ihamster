@@ -23,7 +23,7 @@ set(IHAMSTER_CPP_FILES
 	alg/paint_with_hint.cpp
 	alg/paint_with_hint2.cpp
 	alg/plotcirc_db.cpp
-	alg/seg_object.cpp
+	alg/spot.cpp
 	alg/sobel.cpp	
 	alg/watershed.cpp
 	alg/watershed2.cpp	

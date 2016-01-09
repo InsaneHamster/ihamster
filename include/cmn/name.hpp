@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <string.h>
-//#include <functional>
+#include <functional>
 
 namespace cmn
 {
@@ -47,15 +47,12 @@ inline constexpr name_t name_default() { return name_t{ { {0, 0} } }; };
 
 
 //providing hash for the name_t
-namespace std {
-template< typename T > struct hash;
 
 template<>
-struct hash<cmn::name_t> 
+struct std::hash<cmn::name_t>
 {
 	size_t operator()(cmn::name_t const & s) const
 	{
 		return s.namei[0] + s.namei[1];
 	}
 };
-} //of std
