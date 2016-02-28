@@ -20,8 +20,9 @@ set(IHAMSTER_CPP_FILES
 	adapter/sqlite.cpp
 	alg/diagram.cpp
 	alg/paint.cpp
+	alg/paint2.cpp
 	alg/paint_with_hint.cpp
-	alg/paint_with_hint2.cpp
+	alg/paint_with_hint2.cpp	        
 	alg/plotcirc_db.cpp
 	alg/seg_object.cpp
 	alg/sobel.cpp	

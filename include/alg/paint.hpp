@@ -14,6 +14,8 @@ namespace alg
         cmn::image_pt image_paint_with_hint( cmn::image_pt const & img_sobel_g8, cmn::image_pt const & img_original, float tolerance );
         cmn::image_pt image_paint_with_hint2( cmn::image_pt const & img_sobel_g8, cmn::image_pt const & img_original, float tolerance );
         
-        
+        //paint using accumulated/integral image [each pixel contains values of previous ones]
+        //it subdivides image on squares and computes standard deviation in order to find objects
+        cmn::image_pt image_paint2( cmn::image_pt const & img_original, float tolerance );
         
 }
